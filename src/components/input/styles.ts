@@ -27,4 +27,10 @@ export const styles = StyleSheet.create({
         color: themas.colors.gray,
         marginTop: 20,
         },
+        Icon:{
+            width: '100%',
+        },
+        Button:{
+            width: "10%",
+        }
 })
