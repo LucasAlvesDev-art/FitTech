@@ -16,50 +16,63 @@ import { themas } from '../../global/themes';
 import { MaterialIcons, Octicons } from '@expo/vector-icons';
 import { Input } from '../../components/input';
 import { Button } from '../../components/Button';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+
+
+
 
 export default function Login() {
+    const navigation = useNavigation<NavigationProp<any>>();
+
+
     const[email, setEmail] = React.useState('');
     const[password, setPassword] = React.useState('');
     const[showPassword, setShowPassword] = React.useState(true);
     const[loading, setLoading] = React.useState(false);
 
 
-    // async function getLogin(){ //Simulando uma requisição de login que aparecer no console log
-    //   setLoading(true);
-    //   try {
-
-    //     if(!email || !password){
-    //         return Alert.alert('Atenção', 'Informe os campos obrigatórios');
-    //     }
-
-    //     console.log('Logou');
-    //   }catch (error) {
-    //     console.log(error);
-    //   }
-    //   setLoading(false);
-    // }
-
-
-    async function getLogin(){ //Simulando uma requisição de login com delay
+    async function getLogin(){ //Simulando uma requisição de login que aparecer no console log
+      setLoading(true);
       try {
-        setLoading(true);
 
         if(!email || !password){
             return Alert.alert('Atenção', 'Informe os campos obrigatórios');
         }
 
-        setTimeout(() => {
-                if(email == 'a' && password == 'a'){
-                    Alert.alert('Login realizado com sucesso!');
-                } else {
-                    Alert.alert('Ops', 'Email ou senha incorretos');
-                }
-                setLoading(false);
-        },3000)
-      } catch (error) {
+        navigation.navigate('BottomRoutes');
+
+        console.log('Logou');
+      }catch (error) {
         console.log(error);
+      }finally {
+        setLoading(false);
       }
     }
+
+
+    // async function getLogin(){ //Simulando uma requisição de login com delay
+    //   try {
+    //     setLoading(true);
+
+    //     if(!email || !password){
+    //         return Alert.alert('Atenção', 'Informe os campos obrigatórios');
+    //     }
+    //     navigation.navigate('BottomRoutes');
+
+
+
+    //     setTimeout(() => {
+    //             if(email == 'a' && password == 'a'){
+    //                 Alert.alert('Login realizado com sucesso!');
+    //             } else {
+    //                 Alert.alert('Ops', 'Email ou senha incorretos');
+    //             }
+    //             setLoading(false);
+    //     },3000)
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // }
 
   return (
     <View style={styles.container}>  
