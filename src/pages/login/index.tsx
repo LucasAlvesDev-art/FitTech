@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 import { styles } from './styles';
-import Logo from '../../assets/logo.png';
+import Logo from '../../assets/logofit.png';
 import { themas } from '../../global/themes';
 import { MaterialIcons, Octicons } from '@expo/vector-icons';
 import { Input } from '../../components/input';
