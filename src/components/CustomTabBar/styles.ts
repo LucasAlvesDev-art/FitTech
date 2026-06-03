@@ -26,8 +26,6 @@ export const styles = StyleSheet.create({
     borderRadius: 35,
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 9999,
-    top: -30,
     backgroundColor: themas.colors.primary,
    }
 })

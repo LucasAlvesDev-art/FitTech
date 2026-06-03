@@ -4,11 +4,11 @@ import {Text, View} from 'react-native';
 
 
 
-export default function User() {  
+export default function Aluno() {  
     return (
         <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
             <Text>
-                USER
+                ALUNO
             </Text>
         </View>
     );
