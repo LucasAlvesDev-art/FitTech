@@ -4,10 +4,8 @@ import {
   Text,
   View,
   Image,
-  TextInput,
   TouchableOpacity,
   Alert,
-  ActivityIndicator,
 } from 'react-native';
 
 import { styles } from './styles';
@@ -29,6 +27,7 @@ export default function Login() {
     const[password, setPassword] = React.useState('');
     const[showPassword, setShowPassword] = React.useState(true);
     const[loading, setLoading] = React.useState(false);
+    const [role, setRole] = React.useState('aluno');
 
 
     async function getLogin(){ //Simulando uma requisição de login que aparecer no console log
@@ -39,15 +38,27 @@ export default function Login() {
             return Alert.alert('Atenção', 'Informe os campos obrigatórios');
         }
 
-        navigation.reset({routes: [{name: "BottomRoutes"}]})
+        // depois conecta Supabase
+        // simulação de role por enquanto:
+         const fakeRole = email === "a" ? "instrutor" : "aluno";
+
+        if (fakeRole === "aluno") {
+          navigation.reset({
+            routes: [{ name: "BottomAlunos" }]
+          });
+        } else {
+          navigation.reset({
+            routes: [{ name: "BottomInstrutor" }]
+          });
+        }
 
         console.log('Logou');
-      }catch (error) {
-        console.log(error);
-      }finally {
-        setLoading(false);
-      }
-    }
+          }catch (error) {
+            console.log(error);
+          }finally {
+            setLoading(false);
+          }
+        }
 
 
     // async function getLogin(){ //Simulando uma requisição de login com delay
@@ -104,6 +115,24 @@ export default function Login() {
             onIconRightPress={() => setShowPassword(!showPassword)}
           />
         </View>
+
+
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
+        <TouchableOpacity onPress={() => setRole('aluno')}>
+          <Text style={{ color: role === 'aluno' ? 'blue' : 'gray' }}>
+            Aluno
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => setRole('instrutor')}>
+          <Text style={{ color: role === 'instrutor' ? 'blue' : 'gray' }}>
+            Instrutor
+          </Text>
+        </TouchableOpacity>
+
+        </View>
+
+
         <View style={styles.boxBottom}>
          <Button text="Entrar" loading={loading} onPress={() => getLogin()} />
         </View>

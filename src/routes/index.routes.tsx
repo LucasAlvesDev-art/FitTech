@@ -1,10 +1,17 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Login from '../pages/auth/login';
-import BottomRoutes from './bottom.routes';
+
+
+import BottomAlunos from './bottom.Alunos';
+import BottomInstrutores from './bottom.Instrutores';
+
 
 export default function Routes() {
     const Stack = createStackNavigator();
+
+    // SIMULAÇÃO (depois vem do login/Supabase)
+    const user = { role: 'aluno' };
 
     return (
         <Stack.Navigator
@@ -20,11 +27,19 @@ export default function Routes() {
                 name="Login" 
                 component={Login} 
             />
-            <Stack.Screen 
-                name="BottomRoutes" 
-                component={BottomRoutes} 
-            />
 
+            
+            {user.role === 'aluno' ? (
+                <Stack.Screen 
+                    name="BottomAlunos" 
+                    component={BottomAlunos}
+                />
+            ) : (
+                <Stack.Screen 
+                    name="BottomInstrutores" 
+                    component={BottomInstrutores}
+                />
+            )}
 
         </Stack.Navigator>
     );
