@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Aluno from '../pages/aluno';
-import Instrutor from '../pages/instrutor';
+import Aluno from '../pages/aluno/HomeAluno';
+import Instrutor from '../pages/instrutor/HomeInstrutor';
 import CustomTabBar from '../components/CustomTabBar';
 
 
