@@ -21,33 +21,32 @@ export default({state,navigation}: Props) => {
 
     return(
         <View style={styles.tabArea}>
-            <TouchableOpacity style={styles.tabItem} onPress={() => go('List')}>
+
+            <TouchableOpacity style={styles.tabItem} onPress={() => go('Aluno')}>
                 <AntDesign 
                     name="bars"
                     style={{opacity: state.index === 0 ? 1 : 0.3, color:themas.colors.primary, fontSize:32}} 
                 />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.tabItemButton}>
-                <View style={{width:'100%', left: 10, top:4}}>
+
+            <TouchableOpacity style={styles.tabItem} onPress={() => go('Instrutor')}>
                     <Entypo 
                         name="plus" 
-                        size={40}
-                        color={"#FFF"}
+                        style={{opacity: state.index === 1 ? 1 : 0.3, color:themas.colors.primary, fontSize:32}} 
                     />
-                </View>
+            </TouchableOpacity>
 
-                <View style={{flexDirection:'row-reverse', width:'100%', right: 10, bottom: 10}}>
+            <TouchableOpacity style={styles.tabItem} onPress={() => go('Aluno')}>
                     <MaterialIcons 
                         name="edit" 
-                        color={"#FFF"}
-                        size={30}
+                        style={{opacity: state.index === 0 ? 2 : 0.3, color:themas.colors.primary, fontSize:32}} 
                     />                
-                </View>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.tabItem} onPress={() => go('User')}>
+
+            <TouchableOpacity style={styles.tabItem} onPress={() => go('Instrutor')}>
                 <FontAwesome
                     name="user"
-                    style={{opacity: state.index === 1 ? 1 : 0.3, color:themas.colors.primary, fontSize:32}} 
+                    style={{opacity: state.index === 1 ? 3 : 0.3, color:themas.colors.primary, fontSize:32}} 
                 />
             </TouchableOpacity>
         </View>

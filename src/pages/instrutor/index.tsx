@@ -4,11 +4,11 @@ import {Text, View} from 'react-native';
 
 
 
-export default function List() {  
+export default function Instrutor() {  
     return (
         <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
             <Text>
-                LIST
+                INSTRUTOR
             </Text>
         </View>
     );

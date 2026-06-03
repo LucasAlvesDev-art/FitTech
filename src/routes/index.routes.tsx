@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import Login from '../pages/login';
+import Login from '../pages/auth/login';
 import BottomRoutes from './bottom.routes';
 
 export default function Routes() {
