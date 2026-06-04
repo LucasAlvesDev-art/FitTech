@@ -1,15 +1,19 @@
 import React from 'react';
 import {Text, View} from 'react-native';
+import { Screen } from '../../components/Screen';
+import { themas } from '../../global/themes';
 
 
 
 
-export default function ListaAlunos() {  
-    return (
-        <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-            <Text>
-                LISTA DE ALUNOS
-            </Text>
-        </View>
+export default function Instrutor() {  
+    return (  
+        <Screen>  
+            <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                <Text style={{ color: themas.colors.text }}>
+                    LISTA DE ALUNOS
+                </Text>
+            </View>
+        </Screen>
     );
 }

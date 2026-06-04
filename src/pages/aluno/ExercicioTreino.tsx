@@ -1,15 +1,19 @@
 import React from 'react';
 import {Text, View} from 'react-native';
+import { Screen } from '../../components/Screen';
+import { themas } from '../../global/themes';
 
 
 
 
-export default function ExercicioTreino() {  
-    return (
-        <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-            <Text>
-                EXERCÍCIO DE TREINO
-            </Text>
-        </View>
+export default function Aluno() {  
+    return (    
+        <Screen>
+            <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                <Text style={{ color: themas.colors.text }}>
+                    EXERCICIO TREINO
+                </Text>
+            </View>
+        </Screen>
     );
 }
