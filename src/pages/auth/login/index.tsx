@@ -14,99 +14,54 @@ import { themas } from '../../../global/themes';
 import { MaterialIcons, Octicons } from '@expo/vector-icons';
 import { Input } from '../../../components/input';
 import { Button } from '../../../components/Button';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
 
-
+import { useAuth } from '../../../context/AuthContext';
+import { Screen } from '../../../components/Screen';
 
 
 export default function Login() {
-    const navigation = useNavigation<NavigationProp<any>>();
 
+  const { login, loading } = useAuth();
 
-    const[email, setEmail] = React.useState('');
-    const[password, setPassword] = React.useState('');
-    const[showPassword, setShowPassword] = React.useState(true);
-    const[loading, setLoading] = React.useState(false);
-    const [role, setRole] = React.useState('aluno');
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [showPassword, setShowPassword] = React.useState(true);
+  const [role, setRole] = React.useState<'aluno' | 'instrutor'>('aluno');
 
+  async function getLogin() {
+    if (!email || !password) {
+      Alert.alert('Atenção', 'Informe os campos obrigatórios');
+      return;
+    }
 
-    async function getLogin(){ //Simulando uma requisição de login que aparecer no console log
-      setLoading(true);
-      try {
+    const success = await login(email, password);
 
-        if(!email || !password){
-            return Alert.alert('Atenção', 'Informe os campos obrigatórios');
-        }
+    if (!success) {
+      Alert.alert('Erro', 'Credenciais inválidas');
+    }
+  }
 
-        // depois conecta Supabase
-        // simulação de role por enquanto:
-         const fakeRole = email === "a" ? "instrutor" : "aluno";
+  return ( 
+    <Screen>
+      <View style={styles.container}>
 
-        if (fakeRole === "aluno") {
-          navigation.reset({
-            routes: [{ name: "BottomAlunos" }]
-          });
-        } else {
-          navigation.reset({
-            routes: [{ name: "BottomInstrutor" }]
-          });
-        }
-
-        console.log('Logou');
-          }catch (error) {
-            console.log(error);
-          }finally {
-            setLoading(false);
-          }
-        }
-
-
-    // async function getLogin(){ //Simulando uma requisição de login com delay
-    //   try {
-    //     setLoading(true);
-
-    //     if(!email || !password){
-    //         return Alert.alert('Atenção', 'Informe os campos obrigatórios');
-    //     }
-    //     navigation.navigate('BottomRoutes');
-
-
-
-    //     setTimeout(() => {
-    //             if(email == 'a' && password == 'a'){
-    //                 Alert.alert('Login realizado com sucesso!');
-    //             } else {
-    //                 Alert.alert('Ops', 'Email ou senha incorretos');
-    //             }
-    //             setLoading(false);
-    //     },3000)
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // }
-
-  return (
-    <View style={styles.container}>  
-        <View style={styles.boxTop}> 
-          <Image 
-            source={Logo}
-            style={styles.logo}
-            resizeMode="contain"
-          />
+        <View style={styles.boxTop}>
+          <Image source={Logo} style={styles.logo} resizeMode="contain" />
           <Text style={styles.text}>Bem vindo de volta!</Text>
-
         </View>
-        <View style={styles.boxMid}> 
-          <Input 
+
+        <View style={styles.boxMid}>
+
+          <Input
             value={email}
             onChangeText={setEmail}
             title="ENDEREÇO DE EMAIL"
             IconRight={MaterialIcons}
-            IconRightName="email" 
+            IconRightName="email"
           />
 
           <Input
-            value={password} 
+            value={password}
             onChangeText={setPassword}
             title="SENHA"
             IconRight={Octicons}
@@ -114,30 +69,22 @@ export default function Login() {
             secureTextEntry={showPassword}
             onIconRightPress={() => setShowPassword(!showPassword)}
           />
-        </View>
-
-
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-        <TouchableOpacity onPress={() => setRole('aluno')}>
-          <Text style={{ color: role === 'aluno' ? 'blue' : 'gray' }}>
-            Aluno
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => setRole('instrutor')}>
-          <Text style={{ color: role === 'instrutor' ? 'blue' : 'gray' }}>
-            Instrutor
-          </Text>
-        </TouchableOpacity>
 
         </View>
-
-
+        
         <View style={styles.boxBottom}>
-         <Button text="Entrar" loading={loading} onPress={() => getLogin()} />
+          <Button
+            text="Entrar"
+            loading={loading}
+            onPress={getLogin}
+          />
         </View>
-        <Text style={styles.textBottom}>Não tem uma conta? <Text style={{color:themas.colors.primary}}>Crie agora</Text></Text>
-    </View>
 
+        <Text style={styles.textBottom}>
+          Não tem uma conta? <Text style={{ color: themas.colors.primary }}>Crie agora</Text>
+        </Text>
+
+      </View>
+    </Screen>
   );
 }

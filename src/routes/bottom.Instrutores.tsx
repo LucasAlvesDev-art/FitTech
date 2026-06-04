@@ -1,7 +1,10 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Aluno from '../pages/aluno/HomeAluno';
-import Instrutor from '../pages/instrutor/HomeInstrutor';
-import CustomTabBar from '../components/CustomTabBar';
+import CriarTreino from '../pages/instrutor/CriarTreino';
+import ListaAlunos from '../pages/instrutor/ListaAlunos';
+import HomeInstrutor from '../pages/instrutor/HomeInstrutor';
+import AdicionarExercicio from '../pages/instrutor/AdicionarExercicio';
+import VisualizarTreino from '../pages/instrutor/VisualizarTreino';
+import CustomTabBarInstrutores from '../components/CustomTabBarInstrutor';
 
 
 
@@ -13,17 +16,32 @@ export default function BottomRoutes() {
             screenOptions={{
                 headerShown: false
         }}
-        tabBar={(props) => <CustomTabBar {...props} />}
+        tabBar={(props) => <CustomTabBarInstrutores {...props} />}
         >
 
-            <Tab.Screen 
-                name="Aluno" 
-                component={Aluno} 
+            <Tab.Screen
+                name="HomeInstrutor"
+                component={HomeInstrutor}
             />
-            
-            <Tab.Screen 
-            name="Instrutor" 
-            component={Instrutor} 
+
+            <Tab.Screen
+                name="CriarTreino"
+                component={CriarTreino}
+            />
+
+            <Tab.Screen
+                name="AdicionarExercicio"
+                component={AdicionarExercicio}
+            />
+
+            <Tab.Screen
+                name="ListaAlunos"
+                component={ListaAlunos}
+            />
+
+            <Tab.Screen
+                name="VisualizarTreino"
+                component={VisualizarTreino}
             />
 
     
