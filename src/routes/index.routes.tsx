@@ -4,6 +4,7 @@ import Login from '../pages/login';
 import Cadastro from '../pages/cadastro';
 
 
+
 import BottomAlunos from './bottom.Alunos';
 import BottomInstrutor from './bottom.Instrutores';
 import { useAuth } from '../context/AuthContext';
@@ -16,31 +17,23 @@ export default function Routes() {
     if (loading) {
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <ActivityIndicator 
-                size="large" 
-                color={themas.colors.primary} 
-                />
+                <ActivityIndicator size="large" color={themas.colors.primary} />
             </View>
         );
     }
 
-   return (
-  <Stack.Navigator 
-        screenOptions={{ 
-            headerShown: false 
-        }}>
-
-    {
-    !user ? (
-      <>
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Cadastro" component={Cadastro} />
-      </>
-    ) : user.role === 'instrutor' ? (
-      <Stack.Screen name="BottomInstrutor" component={BottomInstrutor} />
-    ) : (
-      <Stack.Screen name="BottomAlunos" component={BottomAlunos} />
-    )}
-  </Stack.Navigator>
-);
+    return (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+            {!user ? (
+                <>
+                    <Stack.Screen name="Login" component={Login} />
+                    <Stack.Screen name="Cadastro" component={Cadastro} />
+                </>
+            ) : user.role === 'instrutor' ? (
+                <Stack.Screen name="BottomInstrutor" component={BottomInstrutor} />
+            ) : (
+                <Stack.Screen name="BottomAlunos" component={BottomAlunos} />
+            )}
+        </Stack.Navigator>
+    );
 }
