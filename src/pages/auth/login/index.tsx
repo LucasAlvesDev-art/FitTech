@@ -17,9 +17,12 @@ import { Button } from '../../../components/Button';
 
 import { useAuth } from '../../../context/AuthContext';
 import { Screen } from '../../../components/Screen';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 
 export default function Login() {
+
+  const navigation = useNavigation<NavigationProp<any>>();
 
   const { login, loading } = useAuth();
 
@@ -80,9 +83,11 @@ export default function Login() {
           />
         </View>
 
-        <Text style={styles.textBottom}>
-          Não tem uma conta? <Text style={{ color: themas.colors.primary }}>Crie agora</Text>
-        </Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}>
+          <Text style={{ color: themas.colors.primary }}>
+            Não tem conta? Crie agora
+          </Text>
+        </TouchableOpacity>
 
       </View>
     </Screen>
