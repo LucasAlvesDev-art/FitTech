@@ -35,9 +35,9 @@ export default function Login() {
       setLoading(true);
       try {
 
-        if(!email || !password){
-            return Alert.alert('Atenção', 'Informe os campos obrigatórios');
-        }
+        //if(!email || !password){
+        //    return Alert.alert('Atenção', 'Informe os campos obrigatórios');
+        //}
 
         navigation.reset({routes: [{name: "BottomRoutes"}]})
 
