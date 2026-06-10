@@ -19,6 +19,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: themas.colors.buttonDark,
    },
    tabItemButton: {
     width: 70,
@@ -26,8 +27,5 @@ export const styles = StyleSheet.create({
     borderRadius: 35,
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 9999,
-    top: -30,
-    backgroundColor: themas.colors.primary,
    }
 })

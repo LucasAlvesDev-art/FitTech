@@ -21,10 +21,10 @@ type Props = TextInputProps & {
 }
 
 
-export const Input = forwardRef((Props: Props, ref: LegacyRef<TextInput> | null) => {
+export const Input = forwardRef((props: Props, ref: React.Ref<TextInput>) => {
     
 
-    const {IconLeft, IconRight, IconLeftName, IconRightName, title, onIconLeftPress, onIconRightPress, ...rest} = Props
+    const {IconLeft, IconRight, IconLeftName, IconRightName, title, onIconLeftPress, onIconRightPress, ...rest} = props
 
     const calculateSizedWidth = () => {
         if(IconLeft && IconRight){
