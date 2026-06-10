@@ -1,7 +1,9 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import Login from '../pages/login';
 import Cadastro from '../pages/cadastro';
-import BottomRoutes from './bottom.routes';
+
+import BottomAlunos from './bottom.Alunos';
+import BottomInstrutor from './bottom.Instrutores';
 import { useAuth } from '../context/AuthContext';
 
 export default function Routes() {
@@ -23,7 +25,10 @@ export default function Routes() {
                     <Stack.Screen name="Cadastro" component={Cadastro} />
                 </>
             ) : (
-                <Stack.Screen name="BottomRoutes" component={BottomRoutes} />
+                <>
+                    <Stack.Screen name="BottomAlunos" component={BottomAlunos} />
+                    <Stack.Screen name="BottomInstrutor" component={BottomInstrutor} />
+                </>
             )}
         </Stack.Navigator>
     );
