@@ -4,10 +4,7 @@ import {
   Text,
   View,
   Image,
-  TextInput,
-  TouchableOpacity,
   Alert,
-  ActivityIndicator,
 } from 'react-native';
 
 import { styles } from './styles';
@@ -17,13 +14,11 @@ import { MaterialIcons, Octicons } from '@expo/vector-icons';
 import { Input } from '../../components/input';
 import { Button } from '../../components/Button';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-
-
-
+import { useAuth } from '../../context/AuthContext';
 
 export default function Login() {
     const navigation = useNavigation<NavigationProp<any>>();
-
+    const { login } = useAuth();
 
     const[email, setEmail] = React.useState('');
     const[password, setPassword] = React.useState('');
@@ -31,48 +26,20 @@ export default function Login() {
     const[loading, setLoading] = React.useState(false);
 
 
-    async function getLogin(){ //Simulando uma requisição de login que aparecer no console log
+    async function getLogin() {
+      if (!email || !password) {
+        return Alert.alert('Atenção', 'Informe os campos obrigatórios');
+      }
+
       setLoading(true);
       try {
-
-        if(!email || !password){
-            return Alert.alert('Atenção', 'Informe os campos obrigatórios');
-        }
-
-        navigation.reset({routes: [{name: "BottomRoutes"}]})
-
-        console.log('Logou');
-      }catch (error) {
-        console.log(error);
-      }finally {
+        await login(email, password);
+      } catch (error: any) {
+        Alert.alert('Erro', error.message ?? 'Email ou senha incorretos');
+      } finally {
         setLoading(false);
       }
     }
-
-
-    // async function getLogin(){ //Simulando uma requisição de login com delay
-    //   try {
-    //     setLoading(true);
-
-    //     if(!email || !password){
-    //         return Alert.alert('Atenção', 'Informe os campos obrigatórios');
-    //     }
-    //     navigation.navigate('BottomRoutes');
-
-
-
-    //     setTimeout(() => {
-    //             if(email == 'a' && password == 'a'){
-    //                 Alert.alert('Login realizado com sucesso!');
-    //             } else {
-    //                 Alert.alert('Ops', 'Email ou senha incorretos');
-    //             }
-    //             setLoading(false);
-    //     },3000)
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // }
 
   return (
     <View style={styles.container}>  
@@ -107,7 +74,7 @@ export default function Login() {
         <View style={styles.boxBottom}>
          <Button text="Entrar" loading={loading} onPress={() => getLogin()} />
         </View>
-        <Text style={styles.textBottom}>Não tem uma conta? <Text style={{color:themas.colors.primary}}>Crie agora</Text></Text>
+        <Text style={styles.textBottom}>Não tem uma conta? <Text style={{color:themas.colors.primary}} onPress={() => navigation.navigate('Cadastro')}>Crie agora</Text></Text>
     </View>
 
   );
