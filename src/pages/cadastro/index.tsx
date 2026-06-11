@@ -40,11 +40,25 @@ export default function Cadastro() {
       Alert.alert('Sucesso', 'Conta criada! Faça login para continuar.');
       navigation.goBack();
     } catch (error: any) {
-      Alert.alert('Erro', error.message ?? 'Não foi possível criar a conta');
-    } finally {
-      setLoading(false);
+        let message = 'Formato de e-mail inválido ou não é um e-mail';
+
+        if (error.message?.includes('already registered')) {
+          message = 'Este e-mail já está cadastrado';
+        }
+
+        if (error.message?.includes('Password should be at least')) {
+          message = 'A senha deve ter no mínimo 6 caracteres';
+        }
+
+        if (error.message?.includes('Invalid login credentials')) {
+          message = 'E-mail ou senha inválidos';
+        }
+
+        Alert.alert('Erro', message);
+      } finally {
+        setLoading(false);
+      }
     }
-  }
 
   return (
     <View style={styles.container}>

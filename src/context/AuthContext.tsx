@@ -1,5 +1,19 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { signIn, signOut, signUp, getSession, getUserRole, UserRole } from '../services/auth';
+import React, { 
+  createContext, 
+  useContext, 
+  useState, 
+  useEffect, 
+  ReactNode 
+} from 'react';
+
+import { 
+  signIn, 
+  signOut, 
+  signUp, 
+  getSession, 
+  getUserRole, 
+  UserRole 
+} from '../services/auth';
 
 type User = {
   id: string;
