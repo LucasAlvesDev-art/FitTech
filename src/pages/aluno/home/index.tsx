@@ -11,11 +11,11 @@ import {
     Dimensions,
 } from 'react-native';
 import { styles } from './styles';
-import { themas } from '../../global/themes';
+import { themas } from '../../../global/themes';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { TrainingCard } from '../../components/TrainingCard';
-import { PaginationDots } from '../../components/PaginationDots';
+import { TrainingCard } from '../../../components/TrainingCard';
+import { PaginationDots } from '../../../components/PaginationDots';
 
 interface Routine {
     name: string;
@@ -31,16 +31,16 @@ interface Training {
 const MOCK_TRAININGS: Training[] = [
     {
         id: '1',
-        title: 'Treino de Hoje (Peito A)',
+        title: 'Treino de Peito (A)',
         goal: 'Hipertrofia',
         routines: [
-            { name: 'Treino de Hoje (Peito A)' },
-            { name: 'Treino de Hoje' },
+            { name: 'Supino Reto' },
+            { name: 'Supino Inclinado' },
         ],
     },
     {
         id: '2',
-        title: 'Treino de Costas B',
+        title: 'Treino de Costas (B)',
         goal: 'Hipertrofia',
         routines: [
             { name: 'Puxada Frontal' },
@@ -49,7 +49,7 @@ const MOCK_TRAININGS: Training[] = [
     },
     {
         id: '3',
-        title: 'Treino de Pernas C',
+        title: 'Treino de Pernas (C)',
         goal: 'Força',
         routines: [
             { name: 'Agachamento Livre' },
@@ -143,7 +143,7 @@ export default function User() {
                         <TouchableOpacity
                             style={styles.startButton}
                             activeOpacity={0.7}
-                            onPress={() => navigation.navigate('MeuTreino')}
+                            onPress={() => navigation.navigate('meuTreino')}
                         >
                             <Text style={styles.startButtonText}>INICIAR TREINO</Text>
                         </TouchableOpacity>

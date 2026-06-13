@@ -4,6 +4,8 @@ import Cadastro from '../pages/cadastro';
 import BottomRoutes from './bottom.routes';
 import { useAuth } from '../context/AuthContext';
 
+import MeuTreino from '../pages/aluno/meuTreino';
+
 export default function Routes() {
     const Stack = createStackNavigator();
     const { user } = useAuth();
@@ -23,7 +25,10 @@ export default function Routes() {
                     <Stack.Screen name="Cadastro" component={Cadastro} />
                 </>
             ) : (
-                <Stack.Screen name="BottomRoutes" component={BottomRoutes} />
+                <>
+                    <Stack.Screen name="BottomRoutes" component={BottomRoutes} />
+                    <Stack.Screen name="meuTreino" component={MeuTreino} />
+                </>
             )}
         </Stack.Navigator>
     );

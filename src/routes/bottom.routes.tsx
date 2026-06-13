@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import List from '../pages/list';
-import User from '../pages/user';
+import HomeAluno from '../pages/aluno/home';
+//import PerfilAluno from '../pages/aluno/perfil';
 import CustomTabBar from '../components/CustomTabBar';
 
 
@@ -17,14 +17,16 @@ export default function BottomRoutes() {
         >
 
             <Tab.Screen 
-                name="List" 
-                component={List} 
+                name="Home" 
+                component={HomeAluno} 
             />
-            
+
+            {/*
             <Tab.Screen 
-            name="User" 
-            component={User} 
+            name="Perfil" 
+            component={PerfilAluno} 
             />
+            */}
         </Tab.Navigator>
     );
 }
