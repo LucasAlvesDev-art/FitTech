@@ -7,7 +7,8 @@ export const styles = StyleSheet.create({
         height: 50,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: themas.colors.primary,
+        backgroundColor: themas.colors.buttonDark,
+        color: themas.colors.primary,
         borderRadius: 40,
         shadowColor:'#000',
         shadowOffset:{
@@ -25,6 +26,6 @@ export const styles = StyleSheet.create({
     },
     textBottom:{
         fontSize: 16,
-        color: themas.colors.gray,
+        color: themas.colors.text,
     },
 })

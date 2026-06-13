@@ -1,0 +1,19 @@
+import React from 'react';
+import {Text, View} from 'react-native';
+import { Screen } from '../../components/Screen';
+import { themas } from '../../global/themes';
+
+
+
+
+export default function Aluno() {  
+    return (    
+        <Screen>
+            <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                <Text style={{ color: themas.colors.text }}>
+                    MEU TREINO
+                </Text>
+            </View>
+        </Screen>
+    );
+}
