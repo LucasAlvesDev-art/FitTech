@@ -23,7 +23,7 @@ export const styles = StyleSheet.create({
     cardTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: themas.colors.textPrimary,
+        color: '#FFFFFF',
         marginLeft: 10,
     },
     goalContainer: {

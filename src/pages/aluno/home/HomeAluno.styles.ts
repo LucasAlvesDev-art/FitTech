@@ -6,7 +6,7 @@ const { width } = Dimensions.get('window');
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: themas.colors.background,
+        backgroundColor: themas.colors.bgScreen,
     },
 
     emptyStateContainer: {
@@ -39,7 +39,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: 24,
-        paddingTop: 56,
+        paddingTop: 20,
         paddingBottom: 20,
         backgroundColor: themas.colors.surface,
         borderBottomLeftRadius: 20,
@@ -48,7 +48,7 @@ export const styles = StyleSheet.create({
     greeting: {
         fontSize: 26,
         fontWeight: 'bold',
-        color: themas.colors.textPrimary,
+        color: themas.colors.text,
     },
     notificationButton: {
         width: 44,
@@ -87,7 +87,7 @@ export const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: themas.colors.textPrimary,
+        color: themas.colors.text,
     },
 
     /* ── Carousel ── */
@@ -113,7 +113,7 @@ export const styles = StyleSheet.create({
     startButtonText: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: themas.colors.textPrimary,
+        color: themas.colors.text,
         letterSpacing: 2,
     },
 });

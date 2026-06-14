@@ -1,0 +1,146 @@
+import { StyleSheet, Platform } from 'react-native';
+import { themas } from '../../../global/themes';
+
+export const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: themas.colors.bgScreen,
+    },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        paddingTop: Platform.OS === 'ios' ? 60 : 40,
+        paddingBottom: 20,
+    },
+    backButton: {
+        padding: 5,
+    },
+    headerTitle: {
+        color: themas.colors.textSecondary,
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginLeft: 15,
+    },
+    content: {
+        flex: 1,
+        paddingHorizontal: 20,
+        paddingTop: 10,
+    },
+    progressContainer: {
+        marginBottom: 20,
+    },
+    progressText: {
+        color: themas.colors.text,
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 8,
+    },
+    progressBarBackground: {
+        height: 6,
+        backgroundColor: themas.colors.surface,
+        borderRadius: 3,
+        overflow: 'hidden',
+    },
+    progressBarFill: {
+        height: '100%',
+        backgroundColor: themas.colors.primary,
+    },
+    timerBanner: {
+        backgroundColor: themas.colors.primary,
+        borderRadius: 12,
+        paddingVertical: 16,
+        paddingHorizontal: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 20,
+        flexDirection: 'row',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    timerBannerTitle: {
+        color: '#000000',
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginRight: 15,
+    },
+    timerBannerText: {
+        color: '#000000',
+        fontSize: 32,
+        fontWeight: 'bold',
+    },
+    setRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        backgroundColor: themas.colors.surface,
+        padding: 16,
+        borderRadius: 12,
+        marginBottom: 12,
+    },
+    setInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    setLabel: {
+        color: themas.colors.text,
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginRight: 10,
+        width: 65,
+    },
+    setReps: {
+        color: themas.colors.textSecondary,
+        fontSize: 14,
+    },
+    weightInputContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 10,
+    },
+    weightInput: {
+        backgroundColor: themas.colors.bgScreen,
+        color: themas.colors.text,
+        borderRadius: 8,
+        paddingVertical: 6,
+        paddingHorizontal: 10,
+        width: 70,
+        textAlign: 'center',
+        fontSize: 14,
+    },
+    checkButton: {
+        width: 32,
+        height: 32,
+        borderRadius: 16,
+        borderWidth: 2,
+        borderColor: themas.colors.primary,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    checkButtonActive: {
+        backgroundColor: themas.colors.primary,
+    },
+    footer: {
+        paddingHorizontal: 20,
+        paddingBottom: 40,
+        width: '100%',
+    },
+    outlineButton: {
+        width: '100%',
+        borderWidth: 2,
+        borderColor: themas.colors.primary,
+        borderRadius: 12,
+        paddingVertical: 14,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    outlineButtonText: {
+        color: themas.colors.primary,
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+});

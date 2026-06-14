@@ -10,7 +10,7 @@ import {
     NativeScrollEvent,
     Dimensions,
 } from 'react-native';
-import { styles } from './styles';
+import { styles } from './HomeAluno.styles';
 import { themas } from '../../../global/themes';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -28,6 +28,8 @@ interface Training {
     routines: Routine[];
 }
 
+// TODO: [Fase de Integração] Substituir este MOCK_FIXO por uma chamada ao Supabase.
+// Criar um useState para armazenar o treino do dia e atualizar a FlatList para ler esse estado.
 const MOCK_TRAININGS: Training[] = [
     {
         id: '1',
@@ -75,7 +77,7 @@ export default function User() {
         <View style={styles.container}>
             <StatusBar
                 barStyle="light-content"
-                backgroundColor={themas.colors.background}
+                backgroundColor={themas.colors.bgScreen}
             />
 
             {/* Header */}
@@ -112,12 +114,20 @@ export default function User() {
                             ref={flatListRef}
                             data={MOCK_TRAININGS}
                             renderItem={({ item, index }) => (
-                                <TrainingCard
-                                    title={item.title}
-                                    goal={item.goal}
-                                    routines={item.routines}
-                                    isActive={index === activeCardIndex}
-                                />
+                                <TouchableOpacity 
+                                    activeOpacity={0.9}
+                                    onPress={() => {
+                                        setActiveCardIndex(index);
+                                        flatListRef.current?.scrollToIndex({ index, animated: true });
+                                    }}
+                                >
+                                    <TrainingCard
+                                        title={item.title}
+                                        goal={item.goal}
+                                        routines={item.routines}
+                                        isActive={index === activeCardIndex}
+                                    />
+                                </TouchableOpacity>
                             )}
                             keyExtractor={(item) => item.id}
                             horizontal
@@ -143,7 +153,7 @@ export default function User() {
                         <TouchableOpacity
                             style={styles.startButton}
                             activeOpacity={0.7}
-                            onPress={() => navigation.navigate('meuTreino')}
+                            onPress={() => navigation.navigate('MeuTreino')}
                         >
                             <Text style={styles.startButtonText}>INICIAR TREINO</Text>
                         </TouchableOpacity>
