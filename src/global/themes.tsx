@@ -27,5 +27,15 @@ export const themas = {
     success: '#22C55E',
     danger: '#EF4444',
     warning: '#FACC15',
+
+    // Cores específicas da Tela Aluno (Dark theme)
+    cardBackground: '#1E1E1E',
+    cardBorder: '#2A2A2A',
+    primaryGreen: '#6B8F71',
+    accentGreen: '#7DA882',
+    darkGreen: '#4A6B4F',
+    textMuted: '#707070',
+    dotActive: '#6B8F71',
+    dotInactive: '#3A3A3A',
   },
 };

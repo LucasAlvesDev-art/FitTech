@@ -37,25 +37,7 @@ export default function CustomTabBarAluno({ state, navigation }: Props) {
         />
       </TouchableOpacity>
 
-      {/* TREINO */}
-      <TouchableOpacity onPress={() => go('MeuTreino')} style={styles.tabItem}>
-        <MaterialIcons
-          name="fitness-center"
-          size={30}
-          color={themas.colors.primary}
-          style={{ opacity: isActive('MeuTreino') ? 1 : 0.3 }}
-        />
-      </TouchableOpacity>
 
-      {/* EXERCÍCIO */}
-      <TouchableOpacity onPress={() => go('ExercicioTreino')} style={styles.tabItem}>
-        <MaterialIcons
-          name="sports-gymnastics"
-          size={30}
-          color={themas.colors.primary}
-          style={{ opacity: isActive('ExercicioTreino') ? 1 : 0.3 }}
-        />
-      </TouchableOpacity>
 
       {/* PERFIL */}
       <TouchableOpacity onPress={() => go('PerfilAluno')} style={styles.tabItem}>

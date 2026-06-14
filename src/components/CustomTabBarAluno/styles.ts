@@ -4,7 +4,7 @@ import { themas } from '../../global/themes';
 export const styles = StyleSheet.create({
    tabArea: {
     flexDirection: 'row',
-    height: 80,
+    height: 60,
     justifyContent: 'space-around',
     shadowColor: '#000',
     shadowOffset: {
