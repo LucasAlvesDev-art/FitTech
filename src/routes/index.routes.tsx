@@ -6,6 +6,8 @@ import Cadastro from '../pages/cadastro';
 
 import BottomAlunos from './bottom.Alunos';
 import BottomInstrutor from './bottom.Instrutores';
+import MeuTreino from '../pages/aluno/meuTreino/MeuTreino';
+import ExercicioTreino from '../pages/aluno/execucaoTreino/ExercicioTreino';
 
 import { useAuth } from '../context/AuthContext';
 import { themas } from '../global/themes';
@@ -32,7 +34,11 @@ export default function Routes() {
       ) : user.role === 'instrutor' ? (
         <Stack.Screen name="BottomInstrutor" component={BottomInstrutor} />
       ) : (
-        <Stack.Screen name="BottomAlunos" component={BottomAlunos} />
+        <>
+          <Stack.Screen name="BottomAlunos" component={BottomAlunos} />
+          <Stack.Screen name="MeuTreino" component={MeuTreino} />
+          <Stack.Screen name="ExercicioTreino" component={ExercicioTreino} />
+        </>
       )}
     </Stack.Navigator>
   );
