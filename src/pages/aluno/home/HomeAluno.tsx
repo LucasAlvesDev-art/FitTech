@@ -7,9 +7,11 @@ import {
     FlatList,
     StatusBar,
     NativeSyntheticEvent,
-    NativeScrollEvent,
+    NativeScrollEvent, 
     Dimensions,
 } from 'react-native';
+
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from './HomeAluno.styles';
 import { themas } from '../../../global/themes';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
@@ -74,7 +76,7 @@ export default function User() {
     };
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <StatusBar
                 barStyle="light-content"
                 backgroundColor={themas.colors.bgScreen}
@@ -175,6 +177,6 @@ export default function User() {
                     </View>
                 )}
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 }

@@ -1,8 +1,8 @@
 import React from 'react';
 import {Text, View, TouchableOpacity} from 'react-native';
-import { Screen } from '../../components/Screen';
-import { themas } from '../../global/themes';
-import { useAuth } from '../../context/AuthContext';
+import { Screen } from '../../../components/Screen';
+import { themas } from '../../../global/themes';
+import { useAuth } from '../../../context/AuthContext';
 
 
 

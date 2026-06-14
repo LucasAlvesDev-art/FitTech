@@ -1,9 +1,9 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import CriarTreino from '../pages/instrutor/CriarTreino';
-import ListaAlunos from '../pages/instrutor/ListaAlunos';
-import HomeInstrutor from '../pages/instrutor/HomeInstrutor';
-import AdicionarExercicio from '../pages/instrutor/AdicionarExercicio';
-import VisualizarTreino from '../pages/instrutor/VisualizarTreino';
+import CriarTreino from '../pages/instrutor/criarTreino/CriarTreino';
+import ListaAlunos from '../pages/instrutor/listaAlunos/ListaAlunos';
+import HomeInstrutor from '../pages/instrutor/home/HomeInstrutor';
+import AdicionarExercicio from '../pages/instrutor/adicionarExercicio/AdicionarExercicio';
+import VisualizarTreino from '../pages/instrutor/visualizarTreino/VisualizarTreino';
 import CustomTabBarInstrutores from '../components/CustomTabBarInstrutor';
 
 
