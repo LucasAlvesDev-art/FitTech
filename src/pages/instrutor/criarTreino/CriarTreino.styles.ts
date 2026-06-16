@@ -1,81 +1,65 @@
 import { StyleSheet } from 'react-native';
+import { themas } from '../../../global/themes';
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: themas.colors.bgScreen,
     padding: 20,
-    backgroundColor: '#fff',
   },
 
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
+    color: themas.colors.text,
     marginBottom: 10,
-    color: '#333',
   },
 
   subtitle: {
-    fontSize: 16,
-    marginBottom: 10,
-    color: '#4CAF50',
-    fontWeight: '500',
+    color: themas.colors.textSecondary,
+    marginBottom: 20,
   },
 
   warning: {
-    fontSize: 14,
-    marginBottom: 10,
-    color: '#E53935',
-    fontWeight: '500',
+    color: themas.colors.warning,
+    marginBottom: 20,
   },
 
   input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
+    backgroundColor: themas.colors.surface,
     padding: 12,
     borderRadius: 8,
     marginBottom: 10,
-    backgroundColor: '#fff',
+    color: themas.colors.text,
+  },
+
+  label: {
+    color: themas.colors.textSecondary,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+
+  diasContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 20,
+  },
+
+  diaButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
   },
 
   button: {
-    backgroundColor: '#4CAF50',
     padding: 15,
-    borderRadius: 8,
+    borderRadius: 10,
     alignItems: 'center',
-    marginTop: 10,
   },
 
   buttonText: {
-    color: '#fff',
+    color: '#000',
     fontWeight: 'bold',
-    fontSize: 16,
   },
-
-  daysContainer: {
-  flexDirection: 'row',
-  flexWrap: 'wrap',
-  gap: 8,
-  marginBottom: 20,
-},
-
-dayButton: {
-  paddingVertical: 8,
-  paddingHorizontal: 12,
-  borderRadius: 8,
-  borderWidth: 1,
-  borderColor: '#4CAF50',
-},
-
-dayButtonActive: {
-  backgroundColor: '#4CAF50',
-},
-
-dayText: {
-  color: '#4CAF50',
-  fontWeight: '600',
-},
-
-dayTextActive: {
-  color: '#fff',
-},
 });
