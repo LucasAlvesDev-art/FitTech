@@ -1,88 +1,124 @@
-import { supabase } from './supabase'
-import { Exercicio, Treino } from '../types/treino'
+import { supabase } from './supabase';
+import { Exercicio, Treino } from '../types/treino';
 
+/* =========================
+   BUSCAR TREINOS
+========================= */
 export async function buscarTreinos(): Promise<Treino[]> {
   const { data, error } = await supabase
     .from('treinos')
-    .select('*')
+    .select('*');
 
   if (error) {
-    console.error('Erro ao buscar treinos:', error)
-    return []
+    console.error('Erro ao buscar treinos:', error);
+    return [];
   }
 
-  return data as Treino[]
+  return (data ?? []) as Treino[];
 }
 
+/* =========================
+   BUSCAR TREINO POR ID
+========================= */
 export async function buscarTreinoPorId(id: string): Promise<Treino | undefined> {
   const { data, error } = await supabase
     .from('treinos')
     .select('*')
     .eq('id', id)
-    .single()
+    .single();
 
   if (error) {
-    console.error('Erro ao buscar treino:', error)
-    return undefined
+    console.error('Erro ao buscar treino:', error);
+    return undefined;
   }
 
-  return data as Treino
+  return data as Treino;
 }
 
+/* =========================
+   BUSCAR TREINOS POR ALUNO
+========================= */
 export async function buscarTreinosPorAluno(alunoId: string): Promise<Treino[]> {
   const { data, error } = await supabase
     .from('treinos')
     .select('*')
-    .eq('alunoId', alunoId)
+    .eq('aluno_id', alunoId);
 
   if (error) {
-    console.error('Erro ao buscar treinos do aluno:', error)
-    return []
+    console.error('Erro ao buscar treinos do aluno:', error);
+    return [];
   }
 
-  return data as Treino[]
+  return (data ?? []) as Treino[];
 }
 
-export async function salvarTreino(treino: Omit<Treino, 'id' | 'criadoEm'>): Promise<Treino> {
+/* =========================
+   SALVAR TREINO (CORRIGIDO)
+========================= */
+export async function salvarTreino(treino: any): Promise<any> {
+  console.log('📦 DADOS RECEBIDOS NO SERVICE:', treino);
+
+  const payload = {
+    aluno_id: treino.alunoId,
+    aluno_nome: treino.alunoNome,
+    nome: treino.nome,
+    objetivo: treino.objetivo,
+    dias_semana: Array.isArray(treino.dias)
+      ? treino.dias
+      : [],
+  };
+
+  console.log('📤 PAYLOAD FINAL:', payload);
+
   const { data, error } = await supabase
     .from('treinos')
-    .insert(treino)
+    .insert(payload)
     .select()
-    .single()
+    .single();
 
   if (error) {
-    console.error('Erro ao salvar treino:', error)
-    throw error
+    console.error('❌ Erro ao salvar treino:', error);
+    throw error;
   }
 
-  return data as Treino
+  return data;
 }
 
+/* =========================
+   ADICIONAR EXERCICIO
+========================= */
 export async function adicionarExercicioAoTreino(
   treinoId: string,
   exercicio: Exercicio
 ): Promise<Treino | undefined> {
-  const { data: treino } = await supabase
+
+  const { data: treino, error: fetchError } = await supabase
     .from('treinos')
     .select('*')
     .eq('id', treinoId)
-    .single()
+    .single();
 
-  if (!treino) return undefined
+  if (fetchError || !treino) {
+    console.error('Erro ao buscar treino:', fetchError);
+    return undefined;
+  }
 
-  const exerciciosAtualizados = [...treino.exercicios, exercicio]
+  const exerciciosAtualizados = [
+    ...(treino.exercicios ?? []),
+    exercicio,
+  ];
 
   const { data, error } = await supabase
     .from('treinos')
     .update({ exercicios: exerciciosAtualizados })
     .eq('id', treinoId)
     .select()
-    .single()
+    .single();
 
   if (error) {
-    console.error('Erro ao adicionar exercicio:', error)
-    return undefined
+    console.error('Erro ao adicionar exercicio:', error);
+    return undefined;
   }
 
-  return data as Treino
+  return data as Treino;
 }

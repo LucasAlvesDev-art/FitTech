@@ -1,4 +1,8 @@
-export type ObjetivoTreino = 'hipertrofia' | 'emagrecimento' | 'forca' | 'resistencia';
+export type ObjetivoTreino =
+  | 'hipertrofia'
+  | 'emagrecimento'
+  | 'forca'
+  | 'resistencia';
 
 export type Exercicio = {
   id: string;
@@ -15,6 +19,7 @@ export type Treino = {
   alunoNome: string;
   nome: string;
   objetivo: ObjetivoTreino;
+  dias: string; // frontend usa isso
   exercicios: Exercicio[];
   criadoEm: string;
 };
