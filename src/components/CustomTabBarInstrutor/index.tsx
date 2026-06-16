@@ -45,35 +45,6 @@ export default function CustomTabBarInstrutores({ state, navigation }: Props) {
         />
       </TouchableOpacity>
 
-      {/* CRIAR TREINO */}
-      <TouchableOpacity onPress={() => go('CriarTreino')} style={styles.tabItem}>
-        <MaterialIcons
-          name="add-box"
-          size={30}
-          color={themas.colors.primary}
-          style={{ opacity: isActive('CriarTreino') ? 1 : 0.3 }}
-        />
-      </TouchableOpacity>
-
-      {/* ADICIONAR EXERCÍCIO */}
-      <TouchableOpacity onPress={() => go('AdicionarExercicio')} style={styles.tabItem}>
-        <AntDesign
-          name="folder-add"
-          size={28}
-          color={themas.colors.primary}
-          style={{ opacity: isActive('AdicionarExercicio') ? 1 : 0.3 }}
-        />
-      </TouchableOpacity>
-
-      {/* VISUALIZAR TREINO */}
-      <TouchableOpacity onPress={() => go('VisualizarTreino')} style={styles.tabItem}>
-        <MaterialIcons
-          name="preview"
-          size={28}
-          color={themas.colors.primary}
-          style={{ opacity: isActive('VisualizarTreino') ? 1 : 0.3 }}
-        />
-      </TouchableOpacity>
 
     </View>
   );

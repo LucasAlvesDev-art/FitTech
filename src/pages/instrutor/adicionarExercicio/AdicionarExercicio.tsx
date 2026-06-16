@@ -1,36 +1,109 @@
-import React from 'react';
-import {Text, View, TouchableOpacity} from 'react-native';
-import { Screen } from '../../../components/Screen';
-import { themas } from '../../../global/themes';
-import { useAuth } from '../../../context/AuthContext';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { adicionarExercicioAoTreino } from '../../../services/treinosServices';
+import { styles } from './AdicionarExercicio.styles';
 
+type RouteParams = {
+  AdicionarExercicio: {
+    treinoId: string; // ✅ OBRIGATÓRIO
+  };
+};
 
+export default function AdicionarExercicio() {
+  const route = useRoute<RouteProp<RouteParams, 'AdicionarExercicio'>>();
 
-export default function Instrutor() {  
+  const { treinoId } = route.params; // ❌ sem fallback silencioso
 
-    const { logout } = useAuth();
+  const [nome, setNome] = useState('');
+  const [series, setSeries] = useState('');
+  const [repeticoes, setRepeticoes] = useState('');
+  const [loading, setLoading] = useState(false);
 
-    const handleLogout = async () => {
-        await logout();
-    };
+  async function handleAdicionar() {
+    if (!treinoId) {
+      Alert.alert('Erro', 'Treino não encontrado');
+      return;
+    }
 
-    return ( 
-         
-        <Screen>  
-            <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-                
-                <TouchableOpacity onPress={handleLogout}>
-                    <Text style={{ color: 'red', fontSize: 16 }}>
-                        Sair
-                    </Text>
-                </TouchableOpacity>
+    if (!nome || !series || !repeticoes) {
+      Alert.alert('Atenção', 'Preencha todos os campos');
+      return;
+    }
 
-                <Text style={{ color: themas.colors.text }}>
-                    ADICIONAR EXERCICIO
-                </Text>
+    setLoading(true);
 
-            </View>
-        </Screen>
-    );
+    try {
+      await adicionarExercicioAoTreino(treinoId, {
+        id: String(Date.now()),
+        nome,
+        grupoMuscular: '',
+        series: Number(series),
+        repeticoes: Number(repeticoes),
+        descansoSegundos: 60,
+      });
+
+      Alert.alert('Sucesso', 'Exercício adicionado com sucesso!');
+
+      setNome('');
+      setSeries('');
+      setRepeticoes('');
+    } catch (error: any) {
+      console.log('❌ ERRO AO ADICIONAR EXERCÍCIO:', error);
+
+      Alert.alert(
+        'Erro',
+        error?.message || 'Não foi possível adicionar o exercício'
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>Adicionar Exercício</Text>
+
+      <TextInput
+        placeholder="Nome do exercício"
+        value={nome}
+        onChangeText={setNome}
+        style={styles.input}
+      />
+
+      <TextInput
+        placeholder="Séries"
+        value={series}
+        onChangeText={setSeries}
+        keyboardType="numeric"
+        style={styles.input}
+      />
+
+      <TextInput
+        placeholder="Repetições"
+        value={repeticoes}
+        onChangeText={setRepeticoes}
+        keyboardType="numeric"
+        style={styles.input}
+      />
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleAdicionar}
+        disabled={loading}
+      >
+        <Text style={styles.buttonText}>
+          {loading ? 'Adicionando...' : 'Adicionar'}
+        </Text>
+      </TouchableOpacity>
+    </SafeAreaView>
+  );
 }
