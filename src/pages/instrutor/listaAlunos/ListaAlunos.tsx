@@ -6,18 +6,22 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Alert,
+  TextInput,
 } from 'react-native';
+
 import { useNavigation } from '@react-navigation/native';
 
 import { styles } from './ListaAlunos.styles';
 import { getAlunos, Profile } from '../../../services/profileServices';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Screen } from '../../../components/Screen';
 
 export default function ListaAlunos() {
   const navigation = useNavigation<any>();
 
   const [alunos, setAlunos] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [alunosFiltrados, setAlunosFiltrados] = useState<Profile[]>([]);
 
   async function loadAlunos() {
     try {
@@ -28,6 +32,7 @@ export default function ListaAlunos() {
       console.log('📦 ALUNOS CARREGADOS:', data);
 
       setAlunos(data ?? []);
+      setAlunosFiltrados(data ?? []);
     } catch (error) {
       console.log('❌ ERRO AO CARREGAR ALUNOS:', error);
       Alert.alert('Erro', 'Não foi possível carregar os alunos');
@@ -40,14 +45,27 @@ export default function ListaAlunos() {
     loadAlunos();
   }, []);
 
-function handleSelectAluno(aluno: Profile) {
-  console.log('👆 ALUNO:', aluno);
+  function handleSelectAluno(aluno: Profile) {
+    navigation.navigate('CriarTreino', {
+      alunoId: aluno.id,
+      alunoNome: aluno.email,
+    });
+  }
 
-  navigation.navigate('CriarTreino', {
-    alunoId: aluno.id,
-    alunoNome: aluno.email,
-  });
-}
+  function handleSearch(text: string) {
+    setSearch(text);
+
+    if (text.trim() === '') {
+      setAlunosFiltrados(alunos);
+      return;
+    }
+
+    const filtrados = alunos.filter((aluno) =>
+      aluno.email?.toLowerCase().includes(text.toLowerCase())
+    );
+
+    setAlunosFiltrados(filtrados);
+  }
 
   if (loading) {
     return (
@@ -58,11 +76,20 @@ function handleSelectAluno(aluno: Profile) {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <Screen style={styles.container}>
       <Text style={styles.title}>Lista de Alunos</Text>
 
+      {/* SEARCH CORRIGIDO */}
+      <TextInput
+        placeholder="Pesquisar aluno..."
+        placeholderTextColor="#888"
+        value={search}
+        onChangeText={handleSearch}
+        style={styles.searchInput}
+      />
+
       <FlatList
-        data={alunos}
+        data={alunosFiltrados}   
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         onRefresh={loadAlunos}
@@ -77,6 +104,6 @@ function handleSelectAluno(aluno: Profile) {
           </TouchableOpacity>
         )}
       />
-    </SafeAreaView>
+    </Screen>
   );
 }

@@ -1,5 +1,12 @@
 import React from 'react';
-import { Text, View, Image, Alert, TouchableOpacity } from 'react-native';
+import {
+  Text,
+  View,
+  Image,
+  Alert,
+  TouchableOpacity,
+} from 'react-native';
+
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { MaterialIcons, Octicons } from '@expo/vector-icons';
 
@@ -18,8 +25,10 @@ export default function Cadastro() {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
+
   const [showPassword, setShowPassword] = React.useState(true);
   const [showConfirm, setShowConfirm] = React.useState(true);
+
   const [role, setRole] = React.useState<UserRole>('aluno');
   const [loading, setLoading] = React.useState(false);
 
@@ -27,46 +36,63 @@ export default function Cadastro() {
     if (!email || !password || !confirmPassword) {
       return Alert.alert('Atenção', 'Preencha todos os campos');
     }
+
     if (password !== confirmPassword) {
       return Alert.alert('Atenção', 'As senhas não coincidem');
     }
+
     if (password.length < 6) {
       return Alert.alert('Atenção', 'A senha deve ter no mínimo 6 caracteres');
     }
 
     setLoading(true);
+
     try {
-      await cadastro(email, password, role);
-      Alert.alert('Sucesso', 'Conta criada! Faça login para continuar.');
+      // ✔ AGORA CRIA AUTH + PROFILE
+      await cadastro(email.trim(), password, role);
+
+      Alert.alert(
+        'Sucesso',
+        'Conta criada com sucesso! Faça login para continuar.'
+      );
+
       navigation.goBack();
     } catch (error: any) {
-        let message = 'Formato de e-mail inválido ou não é um e-mail';
+      console.log('❌ ERRO CADASTRO:', error);
 
-        if (error.message?.includes('already registered')) {
-          message = 'Este e-mail já está cadastrado';
-        }
+      let message = 'Erro ao criar conta';
 
-        if (error.message?.includes('Password should be at least')) {
-          message = 'A senha deve ter no mínimo 6 caracteres';
-        }
-
-        if (error.message?.includes('Invalid login credentials')) {
-          message = 'E-mail ou senha inválidos';
-        }
-
-        Alert.alert('Erro', message);
-      } finally {
-        setLoading(false);
+      if (error.message?.includes('already registered')) {
+        message = 'Este e-mail já está cadastrado';
       }
+
+      if (error.message?.includes('Password should be at least')) {
+        message = 'A senha deve ter no mínimo 6 caracteres';
+      }
+
+      if (error.message?.includes('Invalid email')) {
+        message = 'E-mail inválido';
+      }
+
+      if (error.message?.includes('duplicate key')) {
+        message = 'Usuário já existe no sistema';
+      }
+
+      Alert.alert('Erro', message);
+    } finally {
+      setLoading(false);
     }
+  }
 
   return (
     <View style={styles.container}>
+      {/* TOP */}
       <View style={styles.boxTop}>
         <Image source={Logo} style={styles.logo} resizeMode="contain" />
         <Text style={styles.text}>Crie sua conta</Text>
       </View>
 
+      {/* MID */}
       <View style={styles.boxMid}>
         <Input
           value={email}
@@ -75,6 +101,7 @@ export default function Cadastro() {
           IconRight={MaterialIcons}
           IconRightName="email"
         />
+
         <Input
           value={password}
           onChangeText={setPassword}
@@ -84,6 +111,7 @@ export default function Cadastro() {
           secureTextEntry={showPassword}
           onIconRightPress={() => setShowPassword(!showPassword)}
         />
+
         <Input
           value={confirmPassword}
           onChangeText={setConfirmPassword}
@@ -94,34 +122,62 @@ export default function Cadastro() {
           onIconRightPress={() => setShowConfirm(!showConfirm)}
         />
 
+        {/* ROLE */}
         <Text style={styles.roleLabel}>TIPO DE USUÁRIO</Text>
+
         <View style={styles.roleContainer}>
           <TouchableOpacity
-            style={[styles.roleButton, role === 'aluno' && styles.roleButtonActive]}
+            style={[
+              styles.roleButton,
+              role === 'aluno' && styles.roleButtonActive,
+            ]}
             onPress={() => setRole('aluno')}
           >
-            <Text style={[styles.roleText, role === 'aluno' && styles.roleTextActive]}>
+            <Text
+              style={[
+                styles.roleText,
+                role === 'aluno' && styles.roleTextActive,
+              ]}
+            >
               Aluno
             </Text>
           </TouchableOpacity>
+
           <TouchableOpacity
-            style={[styles.roleButton, role === 'instrutor' && styles.roleButtonActive]}
+            style={[
+              styles.roleButton,
+              role === 'instrutor' && styles.roleButtonActive,
+            ]}
             onPress={() => setRole('instrutor')}
           >
-            <Text style={[styles.roleText, role === 'instrutor' && styles.roleTextActive]}>
+            <Text
+              style={[
+                styles.roleText,
+                role === 'instrutor' && styles.roleTextActive,
+              ]}
+            >
               Instrutor
             </Text>
           </TouchableOpacity>
         </View>
       </View>
 
+      {/* BOTÃO */}
       <View style={styles.boxBottom}>
-        <Button text="Cadastrar" loading={loading} onPress={handleCadastro} />
+        <Button
+          text="Cadastrar"
+          loading={loading}
+          onPress={handleCadastro}
+        />
       </View>
 
+      {/* LOGIN */}
       <Text style={styles.textBottom}>
         Já tem uma conta?{' '}
-        <Text style={{ color: themas.colors.primary }} onPress={() => navigation.goBack()}>
+        <Text
+          style={{ color: themas.colors.primary }}
+          onPress={() => navigation.goBack()}
+        >
           Entrar
         </Text>
       </Text>

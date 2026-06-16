@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { themas } from '../../../global/themes';
 
 export const styles = StyleSheet.create({
   container: {
@@ -10,8 +11,8 @@ export const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#333',
+    color: themas.colors.text,
+
   },
 
   input: {
@@ -23,16 +24,40 @@ export const styles = StyleSheet.create({
     backgroundColor: '#fafafa',
   },
 
-  button: {
-    backgroundColor: '#4CAF50',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 10,
-  },
+    button:{
+        width: '100%',
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: themas.colors.buttonDark,
+        color: themas.colors.primary,
+        borderRadius: 40,
+        shadowColor:'#000',
+        shadowOffset:{
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.29,
+        shadowRadius: 4.65,
+        elevation: 7,
+    },
 
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
+  },
+
+  backText: {
+    color: themas.colors.text,
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  
+  backButton: {
+  paddingVertical: 6,
+  paddingHorizontal: 10,
+  marginRight: 10,
+  backgroundColor: themas.colors.surface,
+  borderRadius: 8,
   },
 });

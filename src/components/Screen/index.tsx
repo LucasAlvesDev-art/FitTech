@@ -1,15 +1,15 @@
 import React from 'react';
-import { View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { themas } from '../../global/themes';
 
 export function Screen({ children }: any) {
   return (
-    <View style={{
+    <SafeAreaView  style={{
       flex: 1,
       backgroundColor: themas.colors.bgScreen,
       padding: 20
     }}>
       {children}
-    </View>
+    </SafeAreaView>
   );
 }

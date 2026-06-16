@@ -37,6 +37,21 @@ export async function getSession() {
 }
 
 export async function getUserRole(): Promise<UserRole | null> {
-  const { data } = await supabase.auth.getUser();
-  return (data.user?.user_metadata?.role as UserRole) ?? null;
+  const { data: authData } = await supabase.auth.getUser();
+
+  const userId = authData.user?.id;
+
+  if (!userId) return null;
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', userId)
+    .single();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return data.role as UserRole;
 }

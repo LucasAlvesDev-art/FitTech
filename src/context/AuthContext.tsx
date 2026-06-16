@@ -57,7 +57,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function login(email: string, password: string) {
     const data = await signIn(email, password);
-    const role = (data.user?.user_metadata?.role as UserRole) ?? 'aluno';
+
+    const role = await getUserRole();
+
+    if (!role) {
+      await signOut();
+
+      throw new Error(
+        'Perfil não encontrado. Entre em contato com o administrador.'
+      );
+    }
+
     setUser({
       id: data.user!.id,
       email: data.user!.email!,

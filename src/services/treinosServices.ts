@@ -4,17 +4,16 @@ import { Exercicio, Treino } from '../types/treino';
 /* =========================
    BUSCAR TREINOS
 ========================= */
-export async function buscarTreinos(): Promise<Treino[]> {
+export async function buscarTreinos() {
   const { data, error } = await supabase
     .from('treinos')
-    .select('*');
+    .select(`
+      *,
+      exercicios:exercicios!treino_id(*)
+    `);
 
-  if (error) {
-    console.error('Erro ao buscar treinos:', error);
-    return [];
-  }
-
-  return (data ?? []) as Treino[];
+  if (error) throw error;
+  return data;
 }
 
 /* =========================
@@ -63,9 +62,7 @@ export async function salvarTreino(treino: any): Promise<any> {
     aluno_nome: treino.alunoNome,
     nome: treino.nome,
     objetivo: treino.objetivo,
-    dias_semana: Array.isArray(treino.dias)
-      ? treino.dias
-      : [],
+    dias_semana: treino.dias_semana ?? [],
   };
 
   console.log('📤 PAYLOAD FINAL:', payload);
@@ -90,35 +87,99 @@ export async function salvarTreino(treino: any): Promise<any> {
 export async function adicionarExercicioAoTreino(
   treinoId: string,
   exercicio: Exercicio
-): Promise<Treino | undefined> {
-
-  const { data: treino, error: fetchError } = await supabase
-    .from('treinos')
-    .select('*')
-    .eq('id', treinoId)
-    .single();
-
-  if (fetchError || !treino) {
-    console.error('Erro ao buscar treino:', fetchError);
-    return undefined;
-  }
-
-  const exerciciosAtualizados = [
-    ...(treino.exercicios ?? []),
-    exercicio,
-  ];
-
+) {
   const { data, error } = await supabase
-    .from('treinos')
-    .update({ exercicios: exerciciosAtualizados })
-    .eq('id', treinoId)
+    .from('exercicios')
+    .insert([
+      {
+        treino_id: treinoId,
+        nome: exercicio.nome,
+        grupo_muscular: exercicio.grupoMuscular,
+        series: exercicio.series,
+        repeticoes: exercicio.repeticoes,
+        descanso_segundos: exercicio.descansoSegundos,
+      },
+    ])
     .select()
     .single();
 
   if (error) {
-    console.error('Erro ao adicionar exercicio:', error);
-    return undefined;
+    console.log('❌ ERRO AO INSERIR EXERCÍCIO:', error);
+    throw error;
   }
 
-  return data as Treino;
+  return data;
+}
+
+
+export async function buscarTreinosRecentes(limit = 5) {
+  const { data, error } = await supabase
+    .from('treinos')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error('Erro ao buscar treinos recentes:', error);
+    return [];
+  }
+
+  return data ?? [];
+}
+
+export async function removerExercicioDoTreino(
+  treinoId: string,
+  exercicioId: string
+) {
+  const { error } = await supabase
+    .from('exercicios')
+    .delete()
+    .eq('id', exercicioId)
+    .eq('treino_id', treinoId);
+
+  if (error) {
+    console.log('❌ ERRO AO REMOVER EXERCÍCIO:', error);
+    throw error;
+  }
+
+  return true;
+}
+
+export async function removerTreino(treinoId: string) {
+  // 1. remove exercícios ligados ao treino
+  const { error: errorExercicios } = await supabase
+    .from('exercicios')
+    .delete()
+    .eq('treino_id', treinoId);
+
+  if (errorExercicios) {
+    console.log('Erro ao remover exercícios:', errorExercicios);
+    throw errorExercicios;
+  }
+
+  // 2. remove o treino
+  const { error: errorTreino } = await supabase
+    .from('treinos')
+    .delete()
+    .eq('id', treinoId);
+
+  if (errorTreino) {
+    console.log('Erro ao remover treino:', errorTreino);
+    throw errorTreino;
+  }
+
+  return true;
+}
+
+export async function atualizarExercicio(exercicioId: string, dados: any) {
+  const { data, error } = await supabase
+    .from('exercicios')
+    .update(dados)
+    .eq('id', exercicioId)
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  return data;
 }
