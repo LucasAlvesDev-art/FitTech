@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     View,
     Text,
@@ -7,8 +7,7 @@ import {
     FlatList,
     StatusBar,
     NativeSyntheticEvent,
-    NativeScrollEvent, 
-    Dimensions,
+    NativeScrollEvent,
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -18,57 +17,86 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { TrainingCard } from '../../../components/TrainingCard';
 import { PaginationDots } from '../../../components/PaginationDots';
-
-interface Routine {
-    name: string;
-}
-
-interface Training {
-    id: string;
-    title: string;
-    goal: string;
-    routines: Routine[];
-}
-
-// TODO: [Fase de Integração] Substituir este MOCK_FIXO por uma chamada ao Supabase.
-// Criar um useState para armazenar o treino do dia e atualizar a FlatList para ler esse estado.
-const MOCK_TRAININGS: Training[] = [
-    {
-        id: '1',
-        title: 'Treino de Peito (A)',
-        goal: 'Hipertrofia',
-        routines: [
-            { name: 'Supino Reto' },
-            { name: 'Supino Inclinado' },
-        ],
-    },
-    {
-        id: '2',
-        title: 'Treino de Costas (B)',
-        goal: 'Hipertrofia',
-        routines: [
-            { name: 'Puxada Frontal' },
-            { name: 'Remada Curvada' },
-        ],
-    },
-    {
-        id: '3',
-        title: 'Treino de Pernas (C)',
-        goal: 'Força',
-        routines: [
-            { name: 'Agachamento Livre' },
-            { name: 'Leg Press 45°' },
-        ],
-    },
-];
+import { supabase } from '../../../services/supabase';
 
 const CARD_WIDTH = 300;
 
+const DIAS = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB'];
+
+const DIAS_LABEL: Record<string, string> = {
+    DOM: 'Domingo',
+    SEG: 'Segunda-feira',
+    TER: 'Terça-feira',
+    QUA: 'Quarta-feira',
+    QUI: 'Quinta-feira',
+    SEX: 'Sexta-feira',
+    SAB: 'Sábado',
+};
+
 export default function User() {
     const navigation = useNavigation<NavigationProp<any>>();
-    const [activeCardIndex, setActiveCardIndex] = useState(0);
-    const flatListRef = useRef<FlatList<Training>>(null);
 
+    const [treinos, setTreinos] = useState<any[]>([]);
+    const [activeCardIndex, setActiveCardIndex] = useState(0);
+    const [firstName, setFirstName] = useState('Aluno');
+
+    const flatListRef = useRef<FlatList<any>>(null);
+
+    const diaAtual = DIAS[new Date().getDay()];
+
+    // =========================
+    // 👤 BUSCAR USUÁRIO (PROFILES)
+    // =========================
+    async function loadUser() {
+        const { data: authData } = await supabase.auth.getUser();
+
+        const userId = authData?.user?.id;
+
+        if (!userId) return;
+
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('name')
+            .eq('id', userId)
+            .single();
+
+        if (error) {
+            console.log('Erro ao buscar nome:', error);
+            return;
+        }
+
+        setFirstName(data?.name || 'Aluno');
+    }
+
+    // =========================
+    // TREINOS
+    // =========================
+    async function loadTreinos() {
+        const { data, error } = await supabase
+            .from('treinos')
+            .select(`
+                *,
+                exercicios:exercicios(*)
+            `);
+
+        if (error) {
+            console.log('Erro ao buscar treinos:', error);
+            return;
+        }
+
+        setTreinos(data ?? []);
+    }
+
+    useEffect(() => {
+        loadUser();
+        loadTreinos();
+    }, []);
+
+    const treinosDoDia = treinos;
+
+    // =========================
+    // SCROLL CARROSSEL
+    // =========================
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const offsetX = event.nativeEvent.contentOffset.x;
         const index = Math.round(offsetX / CARD_WIDTH);
@@ -82,11 +110,12 @@ export default function User() {
                 backgroundColor={themas.colors.bgScreen}
             />
 
-            {/* Header */}
+            {/* HEADER */}
             <View style={styles.header}>
-                <View>
-                    <Text style={styles.greeting}>Olá, Pedro!</Text>
-                </View>
+                <Text style={styles.greeting}>
+                    Olá, {firstName} 👋
+                </Text>
+
                 <TouchableOpacity style={styles.notificationButton}>
                     <MaterialIcons
                         name="notifications-none"
@@ -96,72 +125,80 @@ export default function User() {
                 </TouchableOpacity>
             </View>
 
-            {/* Content */}
+            {/* CONTENT */}
             <ScrollView
                 style={styles.content}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.contentContainer}
             >
-                {/* Section Title */}
+                {/* TITLE */}
                 <View style={styles.sectionHeader}>
                     <View style={styles.sectionAccent} />
-                    <Text style={styles.sectionTitle}>Treino de Hoje</Text>
+                    <Text style={styles.sectionTitle}>
+                        Treinos da Semana
+                    </Text>
                 </View>
 
-                {MOCK_TRAININGS.length > 0 ? (
-                    // SE TIVER TREINO: Mostra os cards e o botão
+                {/* TREINOS */}
+                {treinosDoDia.length > 0 ? (
                     <>
-                        {/* Training Cards Carrossel */}
                         <FlatList
                             ref={flatListRef}
-                            data={MOCK_TRAININGS}
+                            data={treinosDoDia}
+                            horizontal
+                            keyExtractor={(item) => item.id}
+                            showsHorizontalScrollIndicator={false}
+                            snapToAlignment="center"
+                            snapToInterval={CARD_WIDTH}
+                            decelerationRate="fast"
+                            onScroll={handleScroll}
+                            scrollEventThrottle={16}
+                            contentContainerStyle={styles.carouselContainer}
                             renderItem={({ item, index }) => (
-                                <TouchableOpacity 
+                                <TouchableOpacity
                                     activeOpacity={0.9}
                                     onPress={() => {
                                         setActiveCardIndex(index);
-                                        flatListRef.current?.scrollToIndex({ index, animated: true });
+                                        flatListRef.current?.scrollToIndex({
+                                            index,
+                                            animated: true,
+                                        });
                                     }}
                                 >
                                     <TrainingCard
-                                        title={item.title}
-                                        goal={item.goal}
-                                        routines={item.routines}
+                                        title={item.nome}
+                                        goal={item.objetivo}
+                                        routines={(item.exercicios ?? []).map(
+                                            (e: any) => ({
+                                                name: `${e.nome} • ${e.series}x${e.repeticoes}`,
+                                            })
+                                        )}
                                         isActive={index === activeCardIndex}
                                     />
                                 </TouchableOpacity>
                             )}
-                            keyExtractor={(item) => item.id}
-                            horizontal
-                            showsHorizontalScrollIndicator={false}
-
-                            // Propriedades para o efeito de carrossel (ímã)
-                            snapToAlignment="center"
-                            snapToInterval={CARD_WIDTH}
-                            decelerationRate="fast"
-
-                            contentContainerStyle={styles.carouselContainer}
-                            onScroll={handleScroll}
-                            scrollEventThrottle={16}
                         />
 
-                        {/* Pagination Dots */}
                         <PaginationDots
-                            total={MOCK_TRAININGS.length}
+                            total={treinosDoDia.length}
                             activeIndex={activeCardIndex}
                         />
 
-                        {/* Start Training Button */}
                         <TouchableOpacity
                             style={styles.startButton}
                             activeOpacity={0.7}
-                            onPress={() => navigation.navigate('MeuTreino')}
+                            onPress={() =>
+                                navigation.navigate('MeuTreino', {
+                                    treinoId: treinosDoDia[activeCardIndex]?.id
+                                })
+                            }
                         >
-                            <Text style={styles.startButtonText}>INICIAR TREINO</Text>
+                            <Text style={styles.startButtonText}>
+                                INICIAR TREINO
+                            </Text>
                         </TouchableOpacity>
                     </>
                 ) : (
-                    // SE NÃO TIVER TREINO: Mostra a Cadeira de Descanso (Empty State)
                     <View style={styles.emptyStateContainer}>
                         <MaterialIcons
                             name="weekend"
@@ -169,10 +206,10 @@ export default function User() {
                             color={themas.colors.primaryGreen}
                         />
                         <Text style={styles.emptyStateTitle}>
-                            Aproveite o descanso!
+                            Nenhum treino encontrado
                         </Text>
                         <Text style={styles.emptyStateText}>
-                            Seu instrutor ainda está preparando o seu treino.
+                            Seu instrutor ainda não criou treinos para você.
                         </Text>
                     </View>
                 )}

@@ -12,7 +12,6 @@ export const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: themas.colors.text,
-
   },
 
   input: {

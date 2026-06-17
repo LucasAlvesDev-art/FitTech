@@ -2,16 +2,39 @@ import { supabase } from './supabase';
 
 export type UserRole = 'aluno' | 'instrutor';
 
-export async function signUp(email: string, password: string, role: UserRole) {
+export async function signUp(
+  email: string,
+  password: string,
+  role: UserRole,
+  name?: string
+) {
+  // 1. cria usuário no auth
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: {
-      data: { role },
-    },
   });
 
   if (error) throw error;
+
+  const user = data.user;
+
+  if (!user) throw new Error('Usuário não criado');
+
+  // 2. cria profile no banco (AQUI SALVA O NOME)
+  const { error: profileError } = await supabase
+    .from('profiles')
+    .upsert({
+      id: user.id,
+      email,
+      role,
+      name: name ?? '',
+    });
+
+  if (profileError) {
+    console.log('Erro profile:', profileError);
+    throw profileError;
+  }
+
   return data;
 }
 

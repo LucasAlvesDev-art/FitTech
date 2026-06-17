@@ -8,10 +8,9 @@ export const styles = StyleSheet.create({
   },
 
   title: {
-    color: themas.colors.text,
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    color: themas.colors.text,
   },
 
   card: {
@@ -42,4 +41,17 @@ export const styles = StyleSheet.create({
   color: '#FFF',
   marginBottom: 15,
 },
+  backButton: {
+  paddingVertical: 6,
+  paddingHorizontal: 10,
+  marginRight: 10,
+  backgroundColor: themas.colors.surface,
+  borderRadius: 8,
+  },
+
+   backText: {
+    color: themas.colors.text,
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
 })

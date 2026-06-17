@@ -1,26 +1,38 @@
-import React, { useState } from 'react';
-import { 
-    View, Text, TouchableOpacity, StatusBar, ScrollView, 
-    Image, Alert, Modal, TextInput, KeyboardAvoidingView, Platform 
+import React, { useEffect, useState } from 'react';
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    StatusBar,
+    ScrollView,
+    Image,
+    Alert,
+    Modal,
+    TextInput,
+    KeyboardAvoidingView,
+    Platform
 } from 'react-native';
+
 import { MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+
 import { styles } from './PerfilAluno.styles';
 import { themas } from '../../../global/themes';
 import { useAuth } from '../../../context/AuthContext';
 
 export default function PerfilAluno() {
-    const { logout } = useAuth();
-    
-    // Estados do Perfil
+    const { logout, user } = useAuth();
+
     const [image, setImage] = useState<string | null>(null);
-    const [pesos, setPesos] = useState({ inicial: '70', atual: '75', meta: '80' });
-    
-    // Estados para controlar os Modais (Janelas)
+
+    const [pesos, setPesos] = useState({
+        inicial: '70',
+        atual: '75',
+        meta: '80'
+    });
+
     const [isPesoModalVisible, setPesoModalVisible] = useState(false);
     const [isConfigModalVisible, setConfigModalVisible] = useState(false);
-    
-    // Estado temporário para o input do modal de pesos
     const [tempPesos, setTempPesos] = useState(pesos);
 
     const handleLogout = async () => {
@@ -29,6 +41,7 @@ export default function PerfilAluno() {
 
     const pickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
         if (status !== 'granted') {
             Alert.alert('Ops!', 'Precisamos de permissão para acessar suas fotos.');
             return;
@@ -53,155 +66,193 @@ export default function PerfilAluno() {
 
     return (
         <View style={styles.container}>
-            <StatusBar barStyle="light-content" backgroundColor={themas.colors.bgScreen} />
-            
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-                
-                {/* Cabeçalho */}
+            <StatusBar
+                barStyle="light-content"
+                backgroundColor={themas.colors.bgScreen}
+            />
+
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.scrollContent}
+            >
+
+                {/* HEADER */}
                 <View style={styles.header}>
-                    <TouchableOpacity onPress={pickImage} activeOpacity={0.8} style={styles.avatarContainer}>
+                    <TouchableOpacity
+                        onPress={pickImage}
+                        activeOpacity={0.8}
+                        style={styles.avatarContainer}
+                    >
                         {image ? (
-                            <Image source={{ uri: image }} style={styles.avatarImage} />
+                            <Image
+                                source={{ uri: image }}
+                                style={styles.avatarImage}
+                            />
                         ) : (
-                            <MaterialIcons name="account-circle" size={100} color={themas.colors.textSecondary} />
+                            <MaterialIcons
+                                name="account-circle"
+                                size={100}
+                                color={themas.colors.textSecondary}
+                            />
                         )}
+
                         <View style={styles.editPhotoIcon}>
-                            <MaterialIcons name="camera-alt" size={16} color="#FFF" />
+                            <MaterialIcons
+                                name="camera-alt"
+                                size={16}
+                                color="#FFF"
+                            />
                         </View>
                     </TouchableOpacity>
-                    <Text style={styles.userName}>Pedro Lima</Text>
-                    <Text style={styles.userEmail}>pedro@email.com</Text>
+
+                    {/* NOME VINDO DO SUPABASE */}
+                    <Text style={styles.userName}>
+                        {user?.name || 'Usuário'}
+                    </Text>
+
+                    {/* EMAIL VINDO DO SUPABASE */}
+                    <Text style={styles.userEmail}>
+                        {user?.email || 'Carregando...'}
+                    </Text>
                 </View>
 
-                {/* Estatísticas Corporais */}
+                {/* ESTATÍSTICAS */}
                 <View style={styles.statsContainer}>
                     <View style={styles.statBox}>
                         <Text style={styles.statLabel}>Inicial</Text>
-                        <Text style={styles.statValue}>{pesos.inicial} kg</Text>
+                        <Text style={styles.statValue}>
+                            {pesos.inicial} kg
+                        </Text>
                     </View>
-                    
-                    <TouchableOpacity 
-                        style={[styles.statBox, styles.statBoxDestaque]} 
-                        onPress={() => { setTempPesos(pesos); setPesoModalVisible(true); }} 
-                        activeOpacity={0.7}
+
+                    <TouchableOpacity
+                        style={[styles.statBox, styles.statBoxDestaque]}
+                        onPress={() => {
+                            setTempPesos(pesos);
+                            setPesoModalVisible(true);
+                        }}
                     >
                         <View style={styles.pesoAtualHeader}>
-                            <Text style={styles.statLabelDestaque}>Atual</Text>
-                            <MaterialIcons name="edit" size={14} color={themas.colors.primaryGreen} />
+                            <Text style={styles.statLabelDestaque}>
+                                Atual
+                            </Text>
                         </View>
-                        <Text style={styles.statValueDestaque}>{pesos.atual} kg</Text>
+
+                        <Text style={styles.statValueDestaque}>
+                            {pesos.atual} kg
+                        </Text>
                     </TouchableOpacity>
 
                     <View style={styles.statBox}>
                         <Text style={styles.statLabel}>Meta</Text>
-                        <Text style={styles.statValue}>{pesos.meta} kg</Text>
+                        <Text style={styles.statValue}>
+                            {pesos.meta} kg
+                        </Text>
                     </View>
                 </View>
 
-                {/* Menu */}
+                {/* MENU */}
                 <View style={styles.menuContainer}>
-                    <TouchableOpacity 
-                        style={styles.menuItem} 
-                        activeOpacity={0.7} 
-                        onPress={() => Alert.alert('Histórico', 'Aqui abriremos um calendário mostrando os dias que você treinou!')}
-                    >
+                    <TouchableOpacity style={styles.menuItem}>
                         <View style={styles.menuItemLeft}>
-                            <MaterialIcons name="history" size={24} color={themas.colors.primaryGreen} />
-                            <Text style={styles.menuItemText}>Histórico de Treinos</Text>
+                            <MaterialIcons
+                                name="history"
+                                size={24}
+                                color={themas.colors.primaryGreen}
+                            />
+                            <Text style={styles.menuItemText}>
+                                Histórico de Treinos
+                            </Text>
                         </View>
-                        <MaterialIcons name="chevron-right" size={24} color={themas.colors.textSecondary} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity 
-                        style={styles.menuItem} 
-                        activeOpacity={0.7} 
+                    <TouchableOpacity
+                        style={styles.menuItem}
                         onPress={() => setConfigModalVisible(true)}
                     >
                         <View style={styles.menuItemLeft}>
-                            <MaterialIcons name="settings" size={24} color={themas.colors.primaryGreen} />
-                            <Text style={styles.menuItemText}>Configurações</Text>
+                            <MaterialIcons
+                                name="settings"
+                                size={24}
+                                color={themas.colors.primaryGreen}
+                            />
+                            <Text style={styles.menuItemText}>
+                                Configurações
+                            </Text>
                         </View>
-                        <MaterialIcons name="chevron-right" size={24} color={themas.colors.textSecondary} />
                     </TouchableOpacity>
                 </View>
 
-                {/* Botão de Sair */}
-                <TouchableOpacity style={styles.logoutButton} onPress={handleLogout} activeOpacity={0.7}>
-                    <MaterialIcons name="logout" size={24} color={themas.colors.danger || '#ef4444'} />
-                    <Text style={styles.logoutText}>Sair da Conta</Text>
+                {/* LOGOUT */}
+                <TouchableOpacity
+                    style={styles.logoutButton}
+                    onPress={handleLogout}
+                >
+                    <MaterialIcons
+                        name="logout"
+                        size={24}
+                        color="#ef4444"
+                    />
+                    <Text style={styles.logoutText}>
+                        Sair da Conta
+                    </Text>
                 </TouchableOpacity>
 
             </ScrollView>
 
-            {/* MODAL 1: EDITAR PESOS */}
-            <Modal visible={isPesoModalVisible} transparent animationType="fade">
-                <KeyboardAvoidingView 
-                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
+            {/* MODAL PESOS */}
+            <Modal
+                visible={isPesoModalVisible}
+                transparent
+                animationType="fade"
+            >
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                     style={styles.modalOverlay}
                 >
                     <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>Atualizar Pesos (kg)</Text>
-                        
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.inputLabel}>Peso Inicial</Text>
-                            <TextInput 
-                                style={styles.input} keyboardType="numeric" maxLength={3}
-                                value={tempPesos.inicial}
-                                onChangeText={(val) => setTempPesos({...tempPesos, inicial: val})}
-                            />
-                        </View>
-                        
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.inputLabel}>Peso Atual</Text>
-                            <TextInput 
-                                style={styles.input} keyboardType="numeric" maxLength={3}
-                                value={tempPesos.atual}
-                                onChangeText={(val) => setTempPesos({...tempPesos, atual: val})}
-                            />
-                        </View>
+                        <Text style={styles.modalTitle}>
+                            Atualizar Pesos
+                        </Text>
 
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.inputLabel}>Meta de Peso</Text>
-                            <TextInput 
-                                style={styles.input} keyboardType="numeric" maxLength={3}
-                                value={tempPesos.meta}
-                                onChangeText={(val) => setTempPesos({...tempPesos, meta: val})}
-                            />
-                        </View>
+                        <TextInput
+                            style={styles.input}
+                            value={tempPesos.inicial}
+                            onChangeText={(v) =>
+                                setTempPesos({
+                                    ...tempPesos,
+                                    inicial: v
+                                })
+                            }
+                        />
 
-                        <View style={styles.modalActions}>
-                            <TouchableOpacity style={styles.btnCancel} onPress={() => setPesoModalVisible(false)}>
-                                <Text style={styles.btnCancelText}>Cancelar</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.btnSave} onPress={salvarPesos}>
-                                <Text style={styles.btnSaveText}>Salvar</Text>
-                            </TouchableOpacity>
-                        </View>
+                        <TextInput
+                            style={styles.input}
+                            value={tempPesos.atual}
+                            onChangeText={(v) =>
+                                setTempPesos({
+                                    ...tempPesos,
+                                    atual: v
+                                })
+                            }
+                        />
+
+                        <TextInput
+                            style={styles.input}
+                            value={tempPesos.meta}
+                            onChangeText={(v) =>
+                                setTempPesos({
+                                    ...tempPesos,
+                                    meta: v
+                                })
+                            }
+                        />
+
+                        <TouchableOpacity onPress={salvarPesos}>
+                            <Text>Salvar</Text>
+                        </TouchableOpacity>
                     </View>
                 </KeyboardAvoidingView>
-            </Modal>
-
-            {/* MODAL 2: CONFIGURAÇÕES */}
-            <Modal visible={isConfigModalVisible} transparent animationType="slide">
-                <View style={styles.modalOverlay}>
-                    <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>Configurações</Text>
-                        
-                        <TouchableOpacity style={styles.configOption} onPress={() => Alert.alert('Notificações', 'As notificações de treino foram ativadas.')}>
-                            <Text style={styles.configOptionText}>Ativar Notificações</Text>
-                            <MaterialIcons name="notifications-active" size={24} color={themas.colors.primaryGreen} />
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={styles.configOption} onPress={() => Alert.alert('Senha', 'Enviamos um link de redefinição para o seu email.')}>
-                            <Text style={styles.configOptionText}>Alterar Senha</Text>
-                            <MaterialIcons name="lock-outline" size={24} color={themas.colors.primaryGreen} />
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={styles.btnCancel} onPress={() => setConfigModalVisible(false)}>
-                            <Text style={styles.btnCancelText}>Fechar</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
             </Modal>
 
         </View>

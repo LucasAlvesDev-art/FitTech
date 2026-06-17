@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 import { styles } from './ListaAlunos.styles';
 import { getAlunos, Profile } from '../../../services/profileServices';
@@ -29,8 +30,6 @@ export default function ListaAlunos() {
 
       const data = await getAlunos();
 
-      console.log('📦 ALUNOS CARREGADOS:', data);
-
       setAlunos(data ?? []);
       setAlunosFiltrados(data ?? []);
     } catch (error) {
@@ -48,7 +47,7 @@ export default function ListaAlunos() {
   function handleSelectAluno(aluno: Profile) {
     navigation.navigate('CriarTreino', {
       alunoId: aluno.id,
-      alunoNome: aluno.email,
+      alunoNome: aluno.name || 'Sem nome',
     });
   }
 
@@ -61,7 +60,7 @@ export default function ListaAlunos() {
     }
 
     const filtrados = alunos.filter((aluno) =>
-      aluno.email?.toLowerCase().includes(text.toLowerCase())
+      aluno.name?.toLowerCase().includes(text.toLowerCase())
     );
 
     setAlunosFiltrados(filtrados);
@@ -77,9 +76,28 @@ export default function ListaAlunos() {
 
   return (
     <Screen style={styles.container}>
-      <Text style={styles.title}>Lista de Alunos</Text>
 
-      {/* SEARCH CORRIGIDO */}
+      {/* HEADER */}
+      <View style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 20
+      }}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
+          <Text style={styles.backText}>← Voltar</Text>
+        </TouchableOpacity>
+
+        <Text style={styles.title}>
+          Lista de Alunos
+        </Text>
+
+        <View style={{ width: 30 }} />
+      </View>
+
+      {/* SEARCH */}
       <TextInput
         placeholder="Pesquisar aluno..."
         placeholderTextColor="#888"
@@ -88,8 +106,9 @@ export default function ListaAlunos() {
         style={styles.searchInput}
       />
 
+      {/* LISTA */}
       <FlatList
-        data={alunosFiltrados}   
+        data={alunosFiltrados}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         onRefresh={loadAlunos}
@@ -100,10 +119,13 @@ export default function ListaAlunos() {
             activeOpacity={0.8}
             onPress={() => handleSelectAluno(item)}
           >
-            <Text style={styles.name}>{item.email}</Text>
+            <Text style={styles.name}>
+              {item.name || 'Sem nome'}
+            </Text>
           </TouchableOpacity>
         )}
       />
+
     </Screen>
   );
 }

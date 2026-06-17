@@ -4,6 +4,7 @@ export type Profile = {
   id: string
   email: string
   role: 'aluno' | 'instrutor'
+  name?: string
 }
 
 /**
@@ -12,7 +13,7 @@ export type Profile = {
 export async function getProfiles(): Promise<Profile[]> {
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, email, role')
+    .select('id, email, role, name')
 
   if (error) {
     console.error('❌ Erro ao buscar profiles:', error)
@@ -28,7 +29,7 @@ export async function getProfiles(): Promise<Profile[]> {
 export async function getProfileById(id: string): Promise<Profile | null> {
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, email, role')
+    .select('id, email, role, name')
     .eq('id', id)
     .single()
 
@@ -46,7 +47,7 @@ export async function getProfileById(id: string): Promise<Profile | null> {
 export async function getAlunos(): Promise<Profile[]> {
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, email, role')
+    .select('id, email, role, name')
     .eq('role', 'aluno')
 
   console.log('📦 ALUNOS RAW:', data)
@@ -58,4 +59,21 @@ export async function getAlunos(): Promise<Profile[]> {
   }
 
   return data ?? []
+}
+
+/**
+ * Atualizar nome do usuário
+ */
+export async function updateProfileName(id: string, name: string) {
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ name })
+    .eq('id', id)
+
+  if (error) {
+    console.error('❌ Erro ao atualizar nome:', error)
+    return null
+  }
+
+  return data
 }
