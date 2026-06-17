@@ -1,31 +1,42 @@
-import React, { 
-  createContext, 
-  useContext, 
-  useState, 
-  useEffect, 
-  ReactNode 
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode
 } from 'react';
 
-import { 
-  signIn, 
-  signOut, 
-  signUp, 
-  getSession, 
-  getUserRole, 
-  UserRole 
+import {
+  signIn,
+  signOut,
+  signUp,
+  getSession,
+  getUserRole,
+  UserRole
 } from '../services/auth';
+
+import { getProfileById } from '../services/profileServices';
 
 type User = {
   id: string;
   email: string;
   role: UserRole;
+  name?: string;
 };
 
 type AuthContextData = {
   user: User | null;
   loading: boolean;
+
   login: (email: string, password: string) => Promise<void>;
-  cadastro: (email: string, password: string, role: UserRole) => Promise<void>;
+
+  cadastro: (
+    email: string,
+    password: string,
+    role: UserRole,
+    name: string
+  ) => Promise<void>;
+
   logout: () => Promise<void>;
 };
 
@@ -42,12 +53,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function loadSession() {
     try {
       const session = await getSession();
+
       if (session?.user) {
         const role = await getUserRole();
+        const profile = await getProfileById(session.user.id);
+
         setUser({
           id: session.user.id,
           email: session.user.email!,
           role: role ?? 'aluno',
+          name: profile?.name ?? '',
         });
       }
     } finally {
@@ -59,10 +74,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const data = await signIn(email, password);
 
     const role = await getUserRole();
+    const profile = await getProfileById(data.user!.id);
 
     if (!role) {
       await signOut();
-
       throw new Error(
         'Perfil não encontrado. Entre em contato com o administrador.'
       );
@@ -72,11 +87,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       id: data.user!.id,
       email: data.user!.email!,
       role,
+      name: profile?.name ?? '',
     });
   }
 
-  async function cadastro(email: string, password: string, role: UserRole) {
-    await signUp(email, password, role);
+  async function cadastro(
+    email: string,
+    password: string,
+    role: UserRole,
+    name: string
+  ) {
+    await signUp(email, password, role, name);
   }
 
   async function logout() {

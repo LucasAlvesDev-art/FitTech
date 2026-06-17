@@ -22,6 +22,7 @@ export default function Cadastro() {
   const navigation = useNavigation<NavigationProp<any>>();
   const { cadastro } = useAuth();
 
+  const [name, setName] = React.useState(''); // 👈 NOVO CAMPO
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
@@ -33,7 +34,7 @@ export default function Cadastro() {
   const [loading, setLoading] = React.useState(false);
 
   async function handleCadastro() {
-    if (!email || !password || !confirmPassword) {
+    if (!name || !email || !password || !confirmPassword) {
       return Alert.alert('Atenção', 'Preencha todos os campos');
     }
 
@@ -48,8 +49,8 @@ export default function Cadastro() {
     setLoading(true);
 
     try {
-      // ✔ AGORA CRIA AUTH + PROFILE
-      await cadastro(email.trim(), password, role);
+      // ✔ AGORA ENVIA NAME + AUTH + PROFILE
+      await cadastro(email.trim(), password, role, name.trim());
 
       Alert.alert(
         'Sucesso',
@@ -86,6 +87,7 @@ export default function Cadastro() {
 
   return (
     <View style={styles.container}>
+
       {/* TOP */}
       <View style={styles.boxTop}>
         <Image source={Logo} style={styles.logo} resizeMode="contain" />
@@ -94,6 +96,16 @@ export default function Cadastro() {
 
       {/* MID */}
       <View style={styles.boxMid}>
+
+        {/* 👇 NOVO INPUT NAME */}
+        <Input
+          value={name}
+          onChangeText={setName}
+          title="NOME COMPLETO"
+          IconRight={MaterialIcons}
+          IconRightName="person"
+        />
+
         <Input
           value={email}
           onChangeText={setEmail}

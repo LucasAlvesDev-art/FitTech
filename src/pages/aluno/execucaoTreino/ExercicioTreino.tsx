@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity, StatusBar, TextInput, ScrollView } from 'react-native';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import {
+    Text,
+    View,
+    TouchableOpacity,
+    StatusBar,
+    TextInput,
+    ScrollView,
+    Alert,
+} from 'react-native';
+
+import { useNavigation, useRoute, RouteProp, useFocusEffect } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { styles } from './ExercicioTreino.styles';
 import { themas } from '../../../global/themes';
 import { Exercise } from '../meuTreino/MeuTreino';
+import { supabase } from '../../../services/supabase';
 
 type RouteParams = {
     params: {
@@ -13,24 +23,53 @@ type RouteParams = {
 };
 
 export default function ExercicioTreino() {
-    const navigation = useNavigation();
+    const navigation = useNavigation<any>();
     const route = useRoute<RouteProp<RouteParams, 'params'>>();
     const exercise = route.params?.exercise;
 
     const totalSets = exercise?.seriesTotais || 0;
-    
-    const [completedSets, setCompletedSets] = useState(exercise?.seriesConcluidas || 0);
+
+    const [completed, setCompleted] = useState<boolean[]>([]);
+    const [weights, setWeights] = useState<string[]>([]);
     const [isResting, setIsResting] = useState(false);
     const [timeLeft, setTimeLeft] = useState(0);
 
-    // Estado local para armazenar o peso preenchido em cada série
-    const [weights, setWeights] = useState<string[]>(Array(totalSets).fill(''));
+    // =========================
+    // CARREGAR PROGRESSO DO BANCO
+    // =========================
+    async function loadProgress() {
+        if (!exercise?.id) return;
 
-    // Lógica do temporizador de descanso
+        const { data } = await supabase
+            .from('exercicios')
+            .select('series_concluidas')
+            .eq('id', exercise.id)
+            .single();
+
+        const completedCount = data?.series_concluidas ?? 0;
+
+        const newCompleted = Array(totalSets)
+            .fill(false)
+            .map((_, i) => i < completedCount);
+
+        setCompleted(newCompleted);
+        setWeights(Array(totalSets).fill(''));
+    }
+
+    // RECARREGA SEMPRE QUE ENTRA NA TELA
+    useFocusEffect(
+        React.useCallback(() => {
+            loadProgress();
+        }, [])
+    );
+
+    // =========================
+    // TIMER
+    // =========================
     useEffect(() => {
         if (!isResting || timeLeft <= 0) {
             if (timeLeft === 0 && isResting) {
-                setIsResting(false); // Fim do descanso
+                setIsResting(false);
             }
             return;
         }
@@ -42,20 +81,44 @@ export default function ExercicioTreino() {
         return () => clearInterval(timer);
     }, [isResting, timeLeft]);
 
-    const handleCheckSet = (setIndex: number) => {
-        // Se a série já foi concluída, não faz nada
-        if (setIndex < completedSets) return;
-        
-        const newCompleted = completedSets + 1;
-        setCompletedSets(newCompleted);
+    // =========================
+    // SALVAR NO SUPABASE
+    // =========================
+    async function saveProgress(value: number) {
+        if (!exercise?.id) return;
 
-        // Se ainda não concluiu todas as séries, inicia descanso
-        if (newCompleted < totalSets) {
+        await supabase
+            .from('exercicios')
+            .update({
+                series_concluidas: value,
+                is_finished: value >= totalSets,
+            })
+            .eq('id', exercise.id);
+    }
+
+    // =========================
+    // TOGGLE SÉRIE
+    // =========================
+    const handleCheckSet = async (index: number) => {
+        const updated = [...completed];
+
+        updated[index] = !updated[index];
+
+        setCompleted(updated);
+
+        const newCompletedSets = updated.filter(Boolean).length;
+
+        await saveProgress(newCompletedSets);
+
+        if (updated[index]) {
             setTimeLeft(exercise?.descansoSegundos || 60);
             setIsResting(true);
         }
     };
 
+    // =========================
+    // PESO
+    // =========================
     const handleWeightChange = (text: string, index: number) => {
         const newWeights = [...weights];
         newWeights[index] = text;
@@ -68,57 +131,84 @@ export default function ExercicioTreino() {
         return `${m}:${s}`;
     };
 
-    const progressPercentage = totalSets > 0 ? (completedSets / totalSets) * 100 : 0;
+    const completedSets = completed.filter(Boolean).length;
 
-    // Gerar um array com o número de séries [0, 1, 2...]
+    const progressPercentage =
+        totalSets > 0 ? (completedSets / totalSets) * 100 : 0;
+
     const setsArray = Array.from({ length: totalSets }, (_, i) => i);
 
     return (
         <View style={styles.container}>
-            <StatusBar barStyle="light-content" backgroundColor={themas.colors.bgScreen} />
-            
-            {/* Header */}
+            <StatusBar
+                barStyle="light-content"
+                backgroundColor={themas.colors.bgScreen}
+            />
+
+            {/* HEADER */}
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <MaterialIcons name="arrow-back-ios" size={24} color={themas.colors.textSecondary} />
+                <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    style={styles.backButton}
+                >
+                    <MaterialIcons
+                        name="arrow-back-ios"
+                        size={24}
+                        color={themas.colors.textSecondary}
+                    />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>{exercise?.nome || 'Exercício'}</Text>
+
+                <Text style={styles.headerTitle}>
+                    {exercise?.nome || 'Exercício'}
+                </Text>
             </View>
 
             <View style={styles.content}>
-                {/* Progress Bar do Exercício */}
+                {/* PROGRESSO */}
                 <View style={styles.progressContainer}>
                     <Text style={styles.progressText}>
-                        Séries: {completedSets}/{totalSets} ({Math.round(progressPercentage)}%)
+                        Séries: {completedSets}/{totalSets} (
+                        {Math.round(progressPercentage)}%)
                     </Text>
+
                     <View style={styles.progressBarBackground}>
-                        <View style={[styles.progressBarFill, { width: `${progressPercentage}%` }]} />
+                        <View
+                            style={[
+                                styles.progressBarFill,
+                                { width: `${progressPercentage}%` },
+                            ]}
+                        />
                     </View>
                 </View>
 
-                {/* Banner de Descanso (Visível enquanto o cronômetro roda) */}
+                {/* TIMER */}
                 {isResting && (
                     <View style={styles.timerBanner}>
-                        <Text style={styles.timerBannerTitle}>Descanso</Text>
-                        <Text style={styles.timerBannerText}>{formatTime(timeLeft)}</Text>
-                        <MaterialIcons name="timer" size={28} color="#000" style={{ marginLeft: 10 }} />
+                        <Text style={styles.timerBannerTitle}>
+                            Descanso
+                        </Text>
+                        <Text style={styles.timerBannerText}>
+                            {formatTime(timeLeft)}
+                        </Text>
                     </View>
                 )}
 
-                {/* Lista de Séries */}
+                {/* LISTA */}
                 <ScrollView showsVerticalScrollIndicator={false}>
                     {setsArray.map((index) => {
-                        const isCompleted = index < completedSets;
-                        const isActive = index === completedSets;
-                        
+                        const isCompleted = completed[index];
+
                         return (
                             <View key={index} style={styles.setRow}>
                                 <View style={styles.setInfo}>
-                                    <Text style={styles.setLabel}>Série {index + 1}</Text>
-                                    <Text style={styles.setReps}>{exercise?.reps} Reps</Text>
+                                    <Text style={styles.setLabel}>
+                                        Série {index + 1}
+                                    </Text>
+                                    <Text style={styles.setReps}>
+                                        {exercise?.reps} Reps
+                                    </Text>
                                 </View>
 
-                                {/* Input Numérico de Peso */}
                                 <View style={styles.weightInputContainer}>
                                     <TextInput
                                         style={styles.weightInput}
@@ -126,21 +216,26 @@ export default function ExercicioTreino() {
                                         placeholderTextColor={themas.colors.gray}
                                         keyboardType="numeric"
                                         value={weights[index]}
-                                        onChangeText={(text) => handleWeightChange(text, index)}
-                                        editable={!isCompleted} // Não edita mais depois de concluído
+                                        onChangeText={(text) =>
+                                            handleWeightChange(text, index)
+                                        }
+                                        editable={!isCompleted}
                                     />
                                 </View>
 
-                                <TouchableOpacity 
+                                <TouchableOpacity
                                     style={[
-                                        styles.checkButton, 
-                                        isCompleted && styles.checkButtonActive
+                                        styles.checkButton,
+                                        isCompleted && styles.checkButtonActive,
                                     ]}
-                                    disabled={!isActive} // Evita clicar fora de ordem
                                     onPress={() => handleCheckSet(index)}
                                 >
                                     {isCompleted && (
-                                        <MaterialIcons name="check" size={20} color={themas.colors.bgScreen} />
+                                        <MaterialIcons
+                                            name="check"
+                                            size={20}
+                                            color={themas.colors.bgScreen}
+                                        />
                                     )}
                                 </TouchableOpacity>
                             </View>
@@ -149,15 +244,18 @@ export default function ExercicioTreino() {
                 </ScrollView>
             </View>
 
-            {/* Footer */}
+            {/* FOOTER */}
             <View style={styles.footer}>
-                <TouchableOpacity 
-                    style={styles.outlineButton} 
-                    activeOpacity={0.7} 
-                    onPress={() => navigation.goBack()}
+                <TouchableOpacity
+                    style={styles.outlineButton}
+                    activeOpacity={0.7}
+                    onPress={async () => {
+                        await saveProgress(completedSets);
+                        navigation.goBack();
+                    }}
                 >
                     <Text style={styles.outlineButtonText}>
-                        Finalizar Exercício
+                        Finalizar Exercicio
                     </Text>
                 </TouchableOpacity>
             </View>
