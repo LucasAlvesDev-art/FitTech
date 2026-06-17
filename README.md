@@ -58,7 +58,8 @@ Tecnologias Utilizadas
 * Acompanhamento dos treinos cadastrados
 
  Estrutura do Projeto
-
+ 
+```bash
 src/ 
 |--assets/	
 |    |-logo.png
@@ -181,6 +182,8 @@ src/
       	|
 	      |_treino.ts
 
+```
+
  Estrutura do Banco de Dados
 
  profiles
@@ -228,10 +231,13 @@ Campos principais:
 
 Abrir o terminal (cmd ou git bash) e rodar:
 
+
+```bash
 cd C:\projetos
 git clone https://github.com/LucasAlvesDev-art/FitTech 
 cd FitTech
 code .
+```
 
 Isso vai baixar o projeto e abrir no VS Code.
 
@@ -239,15 +245,18 @@ USO DIÁRIO (antes de começar a programar)
 
 Sempre que for trabalhar no projeto:
 
+``` bash
 cd C:\projetos\FitTech
 git checkout develop
 git pull origin develop
-
+```
 
  Instalar dependências
 
+```bash
+npm install
+```
 
-npm install 
 npm install instala automaticamente todas as dependências e bibliotecas necessárias para executar o projeto, 
 com base nas informações definidas no arquivo package.json. 
 Além disso, cria a pasta node_modules e configura o ambiente de desenvolvimento da aplicação.
@@ -258,20 +267,37 @@ Além disso, cria a pasta node_modules e configura o ambiente de desenvolvimento
 
 Se ainda não estiver aberto:
 
+```bash
 code .
+```
 
-npx expo start ou npx expo start -c para limpar o cachê do app
+```bash
+npx expo start
+```
 
-Quando terminar de programar, vai precisar encerrar o expo, só pressionar CRTL + C
+ou 
+
+```bash
+npx expo start -c
+```
+
+para limpar o cachê do app
+
+Quando terminar de programar, vai precisar encerrar o expo, só pressionar 
+
+```bash
+CRTL + C
+```
 
 ENVIAR ALTERAÇÕES
 
 Depois de programar:
 
+```bash
 git add .
 git commit -m "feat: descrição da alteração"
 git push origin nome-da-sua-branch
-
+```
 
  Objetivo Acadêmico
 
